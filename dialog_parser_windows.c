@@ -26,6 +26,7 @@ node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0
     newNode -> nextNode1 = nextNode1;
     newNode -> question = question;
     newNode -> paragraphLength = paragraphLength;
+    return newNode;
 }
 
 void sleepms(int milliseconds)
@@ -63,7 +64,7 @@ void typeOutSentence(char sentence[], int speed)
         if (_kbhit() && getch() == ' ')
         {
             char *restOfString = sentence + (i*sizeof(char));
-            printf(restOfString);
+            printf("%s", restOfString);
             break;
         }
         printf("%c", sentence[i]);
@@ -86,7 +87,7 @@ int askBool(char sentence[], int speed)
             if (_kbhit() && getch() == ' ')
             {
                 char *restOfString = sentence + (i*sizeof(char));
-                printf(restOfString);
+                printf("%s", restOfString);
                 break;
             }
             printf("%c", sentence[i]);
