@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <string.h>
 #include <conio.h>
-//among us
+
 typedef struct node {
     char **paragraph;
     int paragraphLength;
