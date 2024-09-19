@@ -268,7 +268,7 @@ int main() {
     char *paragraph2[2] = {"Andy", "Cemetery Drive, no doubt."};
     node *andyGenericNode1 = makeNode(paragraph2, 2, 30, NULL, NULL, NULL);
     introNode1 -> nextNode0 = andyGenericNode1;
-    char *endParagraph0[5] = {"", "Why didn't you sit with them?", "What the hell is wrong with you?", "Stop being a dick.", "Ending 1/xxx: ~{You're An Asshole}~"};
+    char *endParagraph0[5] = {"", "Why didn't you sit with them?", "What the hell is wrong with you?", "Stop being a dick.", "Ending 1/6: ~{You're An Asshole}~"};
     node *ending0 = makeNode(endParagraph0, 5, 30, NULL, NULL, NULL);
     introNode0 -> nextNode0 = ending0;
     char *paragraph3[2] = {"Jason", "Bro what? That song sucks ass! How can you even listen to that?"};
@@ -343,7 +343,7 @@ int main() {
     char *paragraph83[2] = {"Nhu", "This is stupid. I'm taking a nap."};
     node *intermediateNode3 = makeNode(paragraph83, 2, 30, NULL, NULL, NULL);
     intermediateNode2 -> nextNode0 = intermediateNode3;
-    char *paragraph84[4] = {"", "You have no idea who Nhu is or what she is doing in this classroom, but she fell asleep in record time.", "Her friends seem unfazed, though, and you notice one of them drawing suspicious fan art of some character named \"Joker\" while agressively mumbling about an orange scented hand soap.", "There are a couple other people in the room, but you don't have much time to do anything other than listen to them."};
+    char *paragraph84[4] = {"", "You have no idea who Nhu is or what she is doing in this classroom, but she fell asleep faster than you could look over to her while she was talking.", "Her friends seem unfazed, though, and you notice one of them drawing suspicious fan art of some character named \"Joker\" while agressively mumbling about an orange scented hand soap.", "There are a couple other people in the room, but you firstly overhear orange hand soap girl asking what \"maybe\" means."};
     node *intermediateNode4 = makeNode(paragraph84, 4, 30, NULL, NULL, NULL);
     intermediateNode3 -> nextNode0 = intermediateNode4;
     char *paragraph85[2] = {"Aariba", "Ah yes, I see.. mhm... mhm.."};
@@ -362,9 +362,42 @@ int main() {
     char *paragraph89[2] = {mc, "Is that... a piss monster...?"};
     node *homeNode2 = makeNode(paragraph89, 2, 30, NULL, NULL, NULL);
     homeNode1 -> nextNode0 = homeNode2;
-    char *paragraph90[3] = {"", "You got pissed on. What a way to go out." ,"Ending 2/xxx: ~{Golden Shower}~"};
+    char *paragraph90[3] = {"", "You got pissed on. What a way to go out." ,"Ending 2/6: ~{Golden Shower}~"};
     node *homeNodeEnd = makeNode(paragraph90, 3, 30, NULL, NULL, NULL);
     homeNode2 -> nextNode0 = homeNodeEnd;
+    // don't go home
+    char *paragraph91[5] = {"", "You decide not to head home and loiter around school for a while.", "As you walk around, you notice a highly decorated door with what looks like a marble handle.",
+    "It's surprising you haven't noticed this before...", "As you step closer, you feel a warm and welcoming presence behind the door."};
+    node *noHomeNode1 = makeNode(paragraph91, 5, 30, NULL, NULL, "Open the door [y/n]?: ");
+    intermediateNode7 -> nextNode0 = noHomeNode1;
+    // open the door ending
+    char *paragraph92[2] = {"", "You open the door..."};
+    node *openDoorNode1 = makeNode(paragraph92, 2, 30, NULL, NULL, NULL);
+    noHomeNode1 -> nextNode1 = openDoorNode1;
+    char *paragraph93[2] = {"The Elder God, Ryab", "I've been expecting you."};
+    node *openDoorNode2 = makeNode(paragraph93, 2, 30, NULL, NULL, NULL);
+    openDoorNode1 -> nextNode0 = openDoorNode2;
+    char *paragraph94[4] = {"", "You feel an overwhelming presence from this man. It's nothing like you've ever experienced before.", "Yet, somehow, you feel comfortable and safe.", "You are at a loss for words."};
+    node *openDoorNode3 = makeNode(paragraph94, 4, 30, NULL, NULL, NULL);
+    openDoorNode2 -> nextNode0 = openDoorNode3;
+    char *paragraph95[3] = {"The Elder God's Chosen, Angy", "The Elder God has summoned you for a reason.", "Do not disappoint him."};
+    node *openDoorNode4 = makeNode(paragraph95, 3, 30, NULL, NULL, NULL);
+    openDoorNode3 -> nextNode0 = openDoorNode4;
+    char *paragraph96[2] ={mc, "And what might that reason be?"};
+    node *openDoorNode5 = makeNode(paragraph96, 2, 30, NULL, NULL, NULL);
+    openDoorNode4 -> nextNode0 = openDoorNode5;
+    char *paragraph97[3] = {"The Elder God, Ryab", "There are ancient evils inhabiting this establishment, like few you've ever seen.", "However, I can protect you from their curses, should you permit it."};
+    node *openDoorNode6 = makeNode(paragraph97, 3, 30, NULL, NULL, "Will you accept my blessing [y/n]?: ");
+    openDoorNode5 -> nextNode0 = openDoorNode6;
+    char *paragraph98[6] = {"", "A dark and warm presence embraces you.", "It unravels every fiber of your being, and you feel yourself being changed.", "Everything is black, so you can't tell exactly how you've changed, but you know the person you once were no longer exists.", "There is no going back.", "Ending 3/6: ~{A Fate Worse Than Death}~"};
+    node *cursedEndNode = makeNode(paragraph98, 6, 30, NULL, NULL, NULL);
+    openDoorNode6 -> nextNode0 = cursedEndNode;
+
+    char *paragraph200[2] = {"", "You find yourself in a dark corridor once again."};
+    node *progressedIntermediateNode1 = makeNode(paragraph200, 2, 30, NULL, NULL, NULL);
+    openDoorNode6 -> nextNode1 = progressedIntermediateNode1;
+    noHomeNode1 -> nextNode0 = progressedIntermediateNode1;
+
     startFromNode(introNode0);
     freeFromArray(nodeFreeArray);
 }
