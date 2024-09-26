@@ -389,10 +389,12 @@ int main() {
     char *paragraph97[3] = {"The Elder God, Ryab", "There are ancient evils inhabiting this establishment, like few you've ever seen.", "However, I can protect you from their curses, should you permit it."};
     node *openDoorNode6 = makeNode(paragraph97, 3, 30, NULL, NULL, "Will you accept my blessing [y/n]?: ");
     openDoorNode5 -> nextNode0 = openDoorNode6;
+    // monster convert ending
     char *paragraph98[6] = {"", "A dark and warm presence embraces you.", "It unravels every fiber of your being, and you feel yourself being changed.", "Everything is black, so you can't tell exactly how you've changed, but you know the person you once were no longer exists.", "There is no going back.", "Ending 3/6: ~{A Fate Worse Than Death}~"};
     node *cursedEndNode = makeNode(paragraph98, 6, 30, NULL, NULL, NULL);
     openDoorNode6 -> nextNode0 = cursedEndNode;
 
+    // post door nodes
     char *paragraph200[2] = {"", "You find yourself in a dark corridor once again."};
     node *progressedIntermediateNode1 = makeNode(paragraph200, 2, 30, NULL, NULL, NULL);
     openDoorNode6 -> nextNode1 = progressedIntermediateNode1;

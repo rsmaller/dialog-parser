@@ -329,9 +329,28 @@ int main()
     char *paragraph93[2] = {"The Elder God, Ryab", "I've been expecting you."};
     node *openDoorNode2 = makeNode(paragraph93, 2, 30, NULL, NULL, NULL);
     openDoorNode1 -> nextNode0 = openDoorNode2;
-    char *paragraph94[3] = {"The Elder God's Chosen, Angy", "My master has summoned you for a reason.", "Do not disappoint him."};
-    node *openDoorNode3 = makeNode(paragraph94, 3, 30, NULL, NULL, NULL);
+    char *paragraph94[4] = {"", "You feel an overwhelming presence from this man. It's nothing like you've ever experienced before.", "Yet, somehow, you feel comfortable and safe.", "You are at a loss for words."};
+    node *openDoorNode3 = makeNode(paragraph94, 4, 30, NULL, NULL, NULL);
     openDoorNode2 -> nextNode0 = openDoorNode3;
+    char *paragraph95[3] = {"The Elder God's Chosen, Angy", "The Elder God has summoned you for a reason.", "Do not disappoint him."};
+    node *openDoorNode4 = makeNode(paragraph95, 3, 30, NULL, NULL, NULL);
+    openDoorNode3 -> nextNode0 = openDoorNode4;
+    char *paragraph96[2] ={mc, "And what might that reason be?"};
+    node *openDoorNode5 = makeNode(paragraph96, 2, 30, NULL, NULL, NULL);
+    openDoorNode4 -> nextNode0 = openDoorNode5;
+    char *paragraph97[3] = {"The Elder God, Ryab", "There are ancient evils inhabiting this establishment, like few you've ever seen.", "However, I can protect you from their curses, should you permit it."};
+    node *openDoorNode6 = makeNode(paragraph97, 3, 30, NULL, NULL, "Will you accept my blessing [y/n]?: ");
+    openDoorNode5 -> nextNode0 = openDoorNode6;
+    // monster conversion ending
+    char *paragraph98[6] = {"", "A dark and warm presence embraces you.", "It unravels every fiber of your being, and you feel yourself being changed.", "Everything is black, so you can't tell exactly how you've changed, but you know the person you once were no longer exists.", "There is no going back.", "Ending 3/6: ~{A Fate Worse Than Death}~"};
+    node *cursedEndNode = makeNode(paragraph98, 6, 30, NULL, NULL, NULL);
+    openDoorNode6 -> nextNode0 = cursedEndNode;
+
+    // post door nodes
+    char *paragraph200[2] = {"", "You find yourself in a dark corridor once again."};
+    node *progressedIntermediateNode1 = makeNode(paragraph200, 2, 30, NULL, NULL, NULL);
+    openDoorNode6 -> nextNode1 = progressedIntermediateNode1;
+    noHomeNode1 -> nextNode0 = progressedIntermediateNode1;
 
     // startFromNode(introNode0);
     startFromNode(openDoorNode1);
