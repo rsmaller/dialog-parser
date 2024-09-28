@@ -149,7 +149,6 @@ int askBool(char sentence[], int speed) {
     system("clear");
     char input;
     int returnval;
-    int continue_count = 0;
     for (int i=0;i<(int)strlen(sentence);i++)
     {
         sleepms(speed);
