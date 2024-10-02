@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE // for usleep
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -8,7 +9,7 @@
 typedef struct node {
     char **paragraph;
     int paragraphLength;
-    int speed;
+    unsigned int speed;
     struct node *nextNode0;
     struct node *nextNode1;
     char *question;
@@ -24,7 +25,7 @@ void *smartMalloc(size_t size) {
 	void *mallocedPointer = malloc(size);
     if (currentFreeArrayIndex >= (int)(freeArraySize / 2)) {
         freeArraySize *= 2;
-        nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * freeArraySize);
+        nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * (unsigned long)freeArraySize);
     }
 	nodeFreeArray[currentFreeArrayIndex++] = mallocedPointer;
 	return mallocedPointer;
@@ -37,9 +38,9 @@ void freeFromArray(void **arrayToFree) {
 	free(arrayToFree);
 }
 
-node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0, node *nextNode1, char question[]) {
+node *makeNode(char **paragraph, int paragraphLength, unsigned int speed, node *nextNode0, node *nextNode1, char question[]) {
     node *newNode = (node *)smartMalloc(sizeof(node));
-    newNode -> paragraph = (char **)smartMalloc(sizeof(char *) * paragraphLength);
+    newNode -> paragraph = (char **)smartMalloc(sizeof(char *) * (unsigned long)paragraphLength);
     for (int i=0;i<paragraphLength;i++)
     {
         newNode -> paragraph[i] = paragraph[i];
@@ -55,7 +56,7 @@ node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0
 void setUpCanonicalStructs() {
     tcgetattr(0, &canonical);
     tcgetattr(0, &nonCanonical);
-    nonCanonical.c_lflag &= (~ICANON & ~ECHO);
+    nonCanonical.c_lflag &= (tcflag_t)(~ICANON & ~ECHO);
 }
 
 void revertToCanonical() {
@@ -88,7 +89,7 @@ void clearInputBuffer() { // for use in non-canonical mode
 void waitForInput(int character) {
     while (1)
     {
-        char mychar = getc(stdin);
+        char mychar = (char)getc(stdin);
         if (mychar == character) // if ascii newline
         {
             break;
@@ -96,8 +97,8 @@ void waitForInput(int character) {
     }
 }
 
-void sleepms(int milliseconds) {
-    usleep(milliseconds*1000);
+void sleepms(unsigned int milliseconds) {
+    usleep(milliseconds * 1000);
 }
 
 void printEllipse()
@@ -118,7 +119,7 @@ void forceBlockingScanf(const char *formatter, char *address) {
     makeNonCanonical();
 }
 
-void typeOutSentence(char sentence[], int speed) {
+void typeOutSentence(char sentence[], unsigned int speed) {
     int continue_count = 0;
     for (int i=0;i<(int)strlen(sentence);i++)
     {
@@ -135,7 +136,7 @@ void typeOutSentence(char sentence[], int speed) {
         sleepms(speed);
         if (getc(stdin) == ' ')
         {
-            char *restOfString = sentence + (i*sizeof(char));
+            char *restOfString = sentence + (sizeof(char) * (unsigned long)i);
             printf("%s", restOfString);
             break;
         }
@@ -145,7 +146,7 @@ void typeOutSentence(char sentence[], int speed) {
     waitForInput(10);
 }
 
-int askBool(char sentence[], int speed) {
+int askBool(char sentence[], unsigned int speed) {
     system("clear");
     char input;
     int returnval;
@@ -154,7 +155,7 @@ int askBool(char sentence[], int speed) {
         sleepms(speed);
         if (getc(stdin) == ' ')
         {
-            char *restOfString = sentence + (i*sizeof(char));
+            char *restOfString = sentence + (sizeof(char) * (unsigned long)i);
             printf("%s", restOfString);
             break;
         }
@@ -175,7 +176,7 @@ int askBool(char sentence[], int speed) {
     return returnval;
 }
 
-void typeOutParagraph(char *paragraph[], int size, int speed) { // speaker is first element in paragraph array.
+void typeOutParagraph(char *paragraph[], int size, unsigned int speed) { // speaker is first element in paragraph array.
     char *speaker = (char *)smartMalloc((strlen(paragraph[0]) + 2) * sizeof(char)); 
     strcpy(speaker, paragraph[0]);
     strcat(speaker, ":");
@@ -252,7 +253,7 @@ char *getMainCharacter() {
 }
 
 int main() {
-    nodeFreeArray = (void **)malloc(sizeof(void *) * freeArraySize);
+    nodeFreeArray = (void **)malloc(sizeof(void *) * (unsigned long)freeArraySize);
     char *mc = getMainCharacter();
     disableBlocking();
     clearInputBuffer();
