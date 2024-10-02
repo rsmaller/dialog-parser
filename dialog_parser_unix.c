@@ -23,6 +23,10 @@ void **nodeFreeArray;
 
 void *smartMalloc(size_t size) {
 	void *mallocedPointer = malloc(size);
+    char *mallocedCursor = (char *)mallocedPointer;
+    for (int i=0; i<(int)size; i++) {
+        mallocedCursor[i] = 0;
+    }
     if (currentFreeArrayIndex >= (int)(freeArraySize / 2)) {
         freeArraySize *= 2;
         nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * (unsigned long)freeArraySize);
