@@ -16,7 +16,7 @@ typedef struct node {
 node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0, node *nextNode1, char question[])
 {
     node *newNode = (node *)malloc(sizeof(node));
-    newNode -> paragraph = (char **)malloc(sizeof(char *)*paragraphLength);
+    newNode -> paragraph = (char **)malloc(sizeof(char *)*(unsigned int)paragraphLength);
     for (int i=0;i<paragraphLength;i++)
     {
         newNode -> paragraph[i] = paragraph[i];
@@ -31,7 +31,7 @@ node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0
 
 void sleepms(int milliseconds)
 {
-    Sleep(milliseconds);
+    Sleep((DWORD)milliseconds);
 }
 
 void printEllipse()
@@ -64,7 +64,7 @@ void typeOutSentence(char sentence[], int speed)
         sleepms(speed);
         if (_kbhit() && getch() == ' ')
         {
-            char *restOfString = sentence + (i*sizeof(char));
+            char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
             printf("%s", restOfString);
             break;
         }
@@ -94,7 +94,7 @@ char *askOpenQuestion(char sentence[], int speed)
         sleepms(speed);
         if (_kbhit() && getch() == ' ')
         {
-            char *restOfString = sentence + (i*sizeof(char));
+            char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
             printf("%s", restOfString);
             break;
         }
@@ -111,13 +111,12 @@ int askBool(char sentence[], int speed)
     {
         system("cls");
         char input;
-        int continue_count = 0;
         for (int i=0;i<(int)strlen(sentence);i++)
         {
             sleepms(speed);
             if (_kbhit() && getch() == ' ')
             {
-                char *restOfString = sentence + (i*sizeof(char));
+                char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
                 printf("%s", restOfString);
                 break;
             }
@@ -149,6 +148,7 @@ void typeOutParagraph(char *paragraph[], int size, int speed) // speaker is firs
         {
         printf("%s\n", speaker);
         }
+        fflush(stdin); // prevent auto-skipping dialog
         typeOutSentence(paragraph[i], speed);
         system("cls");
     }
@@ -200,7 +200,7 @@ int main()
     while (1)
     {
         system("cls");
-        strcpy(mc, askOpenQuestion("Please enter your name: ", 30));
+        strcpy(mc, askOpenQuestion("Please enter your name: ", 0));
         if (strcmp(mc, "Jason") && strcmp(mc, "Andy"))
         {
             fflush(stdin);
@@ -352,6 +352,6 @@ int main()
     openDoorNode6 -> nextNode1 = progressedIntermediateNode1;
     noHomeNode1 -> nextNode0 = progressedIntermediateNode1;
 
-    // startFromNode(introNode0);
-    startFromNode(openDoorNode1);
+    startFromNode(introNode0);
+    // startFromNode(openDoorNode1);
 }
