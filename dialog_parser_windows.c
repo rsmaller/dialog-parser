@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <Windows.h>
+#include <windows.h>
 #include <string.h>
 #include <conio.h>
 
@@ -27,6 +28,12 @@ node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0
     newNode -> question = question;
     newNode -> paragraphLength = paragraphLength;
     return newNode;
+}
+
+void disableEcho() {
+    DWORD consoleMode = 0 | ~ENABLE_LINE_INPUT;
+    HANDLE stdOutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleMode(stdOutHandle, consoleMode);
 }
 
 void sleepms(int milliseconds)
@@ -71,7 +78,12 @@ void typeOutSentence(char sentence[], int speed)
         printf("%c", sentence[i]);
         fflush(stdout);
     }
-    scanf("%c", dummy);
+    disableEcho();
+    while (!_kbhit() && getch() != '\r') { // hang until enter key is pressed
+        if (getch() == 3) { // CTRL-C
+            exit(-1);
+        }
+    } 
     free(dummy);
 }
 
