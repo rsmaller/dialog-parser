@@ -11,14 +11,15 @@ void *smartMalloc(size_t size) {
 	memset(mallocedPointer, 0, size);
     if (currentFreeArrayIndex >= (int)(freeArraySize / 2)) {
         freeArraySize *= 2;
-        nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * freeArraySize);
+        nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * (size_t)freeArraySize);
     }
 	nodeFreeArray[currentFreeArrayIndex++] = mallocedPointer;
 	return mallocedPointer;
 }
 
-void *smartRealloc(void *oldMallocedPointer, size_t size) {
-	void *newMallocedPointer = realloc(oldMallocedPointer, size);
+void *smartRealloc(void *oldMallocedPointer, size_t oldSize, size_t newSize) {
+	void *newMallocedPointer = realloc(oldMallocedPointer, newSize);
+	memset((char *)newMallocedPointer+oldSize, 0, (size_t)(newSize-oldSize));
 	for (int i=0; i<freeArraySize; i++) {
 		if (nodeFreeArray[i] == oldMallocedPointer) {
 			nodeFreeArray[i] = newMallocedPointer;
@@ -35,12 +36,8 @@ void freeFromArray(void **arrayToFree) {
 }
 
 int main() {
-    nodeFreeArray = (void **)malloc(sizeof(void *) * freeArraySize);
-
-	int *myPointer = (int *)smartMalloc(sizeof(int)*4);
-	myPointer[0] = 4;
-	myPointer = (int *)smartRealloc(myPointer, sizeof(int)*8);
-	printf("%d", myPointer[0]);
+    nodeFreeArray = (void **)malloc(sizeof(void *) * (size_t)freeArraySize);
+	memset(nodeFreeArray, 0, sizeof(void *)*(size_t)freeArraySize);
 	// go ham here
 	freeFromArray(nodeFreeArray);
 }
