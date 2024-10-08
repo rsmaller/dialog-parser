@@ -23,16 +23,23 @@ void **nodeFreeArray;
 
 void *smartMalloc(size_t size) {
 	void *mallocedPointer = malloc(size);
-    char *mallocedCursor = (char *)mallocedPointer;
-    for (int i=0; i<(int)size; i++) {
-        mallocedCursor[i] = 0;
-    }
+    memset(mallocedPointer, 0, size);
     if (currentFreeArrayIndex >= (int)(freeArraySize / 2)) {
         freeArraySize *= 2;
         nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * (unsigned long)freeArraySize);
     }
 	nodeFreeArray[currentFreeArrayIndex++] = mallocedPointer;
 	return mallocedPointer;
+}
+
+void *smartRealloc(void *oldMallocedPointer, size_t size) {
+	void *newMallocedPointer = realloc(oldMallocedPointer, size);
+	for (int i=0; i<freeArraySize; i++) {
+		if (nodeFreeArray[i] == oldMallocedPointer) {
+			nodeFreeArray[i] = newMallocedPointer;
+		}
+	}
+	return newMallocedPointer;
 }
 
 void freeFromArray(void **arrayToFree) {
