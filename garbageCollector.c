@@ -17,14 +17,23 @@ void *smartMalloc(size_t size) {
 	return mallocedPointer;
 }
 
-void *smartRealloc(void *oldMallocedPointer, size_t oldSize, size_t newSize) {
-	void *newMallocedPointer = realloc(oldMallocedPointer, newSize);
-	memset((char *)newMallocedPointer+oldSize, 0, (size_t)(newSize-oldSize));
+void *smartRealloc(void *oldMallocedPointer, size_t size) {
+	void *newMallocedPointer = realloc(oldMallocedPointer, size);
+    int pointerCheck = 0;
 	for (int i=0; i<freeArraySize; i++) {
 		if (nodeFreeArray[i] == oldMallocedPointer) {
 			nodeFreeArray[i] = newMallocedPointer;
+            pointerCheck = 1;
+            break;
 		}
 	}
+    if (!pointerCheck) {
+        if (currentFreeArrayIndex >= (int)(freeArraySize / 2)) {
+            freeArraySize *= 2;
+            nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * (size_t)freeArraySize);
+        }
+        nodeFreeArray[currentFreeArrayIndex++] = newMallocedPointer;
+    }
 	return newMallocedPointer;
 }
 
