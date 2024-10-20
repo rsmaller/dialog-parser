@@ -79,10 +79,12 @@ void typeOutSentence(char sentence[], int speed)
         fflush(stdout);
     }
     disableEcho();
-    while (!_kbhit() && getch() != '\r') { // hang until enter key is pressed
-        if (getch() == 3) { // CTRL-C
+    char currentChar = getch();
+    while (!_kbhit() && currentChar != '\r') { // hang until enter key is pressed
+        if (currentChar == 3) { // CTRL-C
             exit(-1);
         }
+        currentChar = getch();
     } 
     free(dummy);
 }
