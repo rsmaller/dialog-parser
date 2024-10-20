@@ -68,7 +68,6 @@ void typeOutSentence(char sentence[], int speed) {
         printf("%c", sentence[i]);
         fflush(stdout);
     }
-    disableEcho();
     char currentChar = getch();
     while (!_kbhit() && currentChar != '\r') { // hang until enter key is pressed
         if (currentChar == 3) { // CTRL-C
@@ -173,6 +172,7 @@ void freeParagraph(char *paragraph[], int length) {
 }
 
 int main() {
+    disableEcho();
     char mc[201];
     while (1) {
         system("cls");
