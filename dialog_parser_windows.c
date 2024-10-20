@@ -29,7 +29,7 @@ node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0
 }
 
 void disableEcho() {
-    DWORD consoleMode = 0 | ~ENABLE_LINE_INPUT;
+    DWORD consoleMode = ~ENABLE_LINE_INPUT; // 0 |
     HANDLE stdOutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleMode(stdOutHandle, consoleMode);
 }
