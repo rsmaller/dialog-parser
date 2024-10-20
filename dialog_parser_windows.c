@@ -14,12 +14,10 @@ typedef struct node {
     char *question;
 } node;
 
-node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0, node *nextNode1, char question[])
-{
+node *makeNode(char **paragraph, int paragraphLength, int speed, node *nextNode0, node *nextNode1, char question[]) {
     node *newNode = (node *)malloc(sizeof(node));
     newNode -> paragraph = (char **)malloc(sizeof(char *)*(unsigned int)paragraphLength);
-    for (int i=0;i<paragraphLength;i++)
-    {
+    for (int i=0;i<paragraphLength;i++) {
         newNode -> paragraph[i] = paragraph[i];
     }
     newNode -> speed = speed;
@@ -36,41 +34,33 @@ void disableEcho() {
     SetConsoleMode(stdOutHandle, consoleMode);
 }
 
-void sleepms(int milliseconds)
-{
+void sleepms(int milliseconds) {
     Sleep((DWORD)milliseconds);
 }
 
-void printEllipse()
-{
-    for (int i=0;i<3;i++)
-    {
+void printEllipse() {
+    for (int i=0;i<3;i++) {
         sleepms(360);
         printf(".");
         fflush(stdout);
     }
 }
 
-void typeOutSentence(char sentence[], int speed)
-{
+void typeOutSentence(char sentence[], int speed) {
     char *dummy = (char *)malloc(1024);
     int continue_count = 0;
-    for (int i=0;i<(int)strlen(sentence);i++)
-    {
-        if (sentence[i] == '{' && sentence[i+1] == '.' && sentence[i+2] == '.' && sentence[i+3] == '.' && sentence[i+4] == '}')
-        {
+    for (int i=0;i<(int)strlen(sentence);i++) {
+        if (sentence[i] == '{' && sentence[i+1] == '.' && sentence[i+2] == '.' && sentence[i+3] == '.' && sentence[i+4] == '}') {
             printEllipse();
             continue_count = 5;
         }
-        if (continue_count)
-        {
+        if (continue_count) {
             continue_count -= 1;
             continue;
         }
         // makeTypeNoise(speed);
         sleepms(speed);
-        if (_kbhit() && getch() == ' ')
-        {
+        if (_kbhit() && getch() == ' ') {
             char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
             printf("%s", restOfString);
             break;
@@ -89,25 +79,20 @@ void typeOutSentence(char sentence[], int speed)
     free(dummy);
 }
 
-char *askOpenQuestion(char sentence[], int speed)
-{
+char *askOpenQuestion(char sentence[], int speed) {
     char *dummy = (char *)malloc(1024);
     int continue_count = 0;
-    for (int i=0;i<(int)strlen(sentence);i++)
-    {
-        if (sentence[i] == '{' && sentence[i+1] == '.' && sentence[i+2] == '.' && sentence[i+3] == '.' && sentence[i+4] == '}')
-        {
+    for (int i=0;i<(int)strlen(sentence);i++) {
+        if (sentence[i] == '{' && sentence[i+1] == '.' && sentence[i+2] == '.' && sentence[i+3] == '.' && sentence[i+4] == '}') {
             printEllipse();
             continue_count = 5;
         }
-        if (continue_count)
-        {
+        if (continue_count) {
             continue_count -= 1;
             continue;
         }
         sleepms(speed);
-        if (_kbhit() && getch() == ' ')
-        {
+        if (_kbhit() && getch() == ' ') {
             char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
             printf("%s", restOfString);
             break;
@@ -119,17 +104,13 @@ char *askOpenQuestion(char sentence[], int speed)
     return dummy;
 }
 
-int askBool(char sentence[], int speed)
-{
-    while (1)
-    {
+int askBool(char sentence[], int speed) {
+    while (1) {
         system("cls");
         char input;
-        for (int i=0;i<(int)strlen(sentence);i++)
-        {
+        for (int i=0;i<(int)strlen(sentence);i++) {
             sleepms(speed);
-            if (_kbhit() && getch() == ' ')
-            {
+            if (_kbhit() && getch() == ' ') {
                 char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
                 printf("%s", restOfString);
                 break;
@@ -139,27 +120,21 @@ int askBool(char sentence[], int speed)
         }
         scanf(" %c", &input);
         fflush(stdin);
-        if (input == 'y')
-        {
+        if (input == 'y') {
             return 1;
-        }
-        else if (input == 'n')
-        {
+        } else if (input == 'n') {
             return 0;
         }
     }
 }
 
-void typeOutParagraph(char *paragraph[], int size, int speed) // speaker is first element in paragraph array.
-{
+void typeOutParagraph(char *paragraph[], int size, int speed) {// speaker is first element in paragraph array.
     char *speaker = (char *)malloc((strlen(paragraph[0]) + 2) * sizeof(char)); 
     strcpy(speaker, paragraph[0]);
     strcat(speaker, ":");
     system("cls");
-    for (int i=1;i<size;i++)
-    {
-        if (strcmp(speaker, ":"))
-        {
+    for (int i=1;i<size;i++) {
+        if (strcmp(speaker, ":")) {
         printf("%s\n", speaker);
         }
         fflush(stdin); // prevent auto-skipping dialog
@@ -169,59 +144,43 @@ void typeOutParagraph(char *paragraph[], int size, int speed) // speaker is firs
     free(speaker);
 }
 
-void typeOutNode(node *nodeArg)
-{
+void typeOutNode(node *nodeArg) {
     typeOutParagraph(nodeArg -> paragraph, nodeArg -> paragraphLength, nodeArg -> speed);
 }
 
-void startFromNode(node *nodeArg)
-{
+void startFromNode(node *nodeArg) {
     node *currentNode = nodeArg;
     typeOutNode(currentNode);
-    while (currentNode -> nextNode0 || currentNode -> nextNode1)
-    {
-        if (currentNode -> question)
-        {
+    while (currentNode -> nextNode0 || currentNode -> nextNode1) {
+        if (currentNode -> question) {
             int outcome = askBool(currentNode -> question, currentNode -> speed);
-            if (outcome)
-            {
+            if (outcome) {
                 currentNode = currentNode -> nextNode1;
-            }
-            else
-            {
+            } else {
                 currentNode = currentNode -> nextNode0;
             }
-        }
-        else
-        {
+        } else {
             currentNode = currentNode -> nextNode0;
         }
         typeOutNode(currentNode);
     }
 }
 
-void freeParagraph(char *paragraph[], int length)
-{
-    for (int i=0;i<length;i++)
-    {
+void freeParagraph(char *paragraph[], int length) {
+    for (int i=0;i<length;i++) {
         free(paragraph[i]);
     }
 }
 
-int main()
-{
+int main() {
     char mc[201];
-    while (1)
-    {
+    while (1) {
         system("cls");
         strcpy(mc, askOpenQuestion("Please enter your name: ", 0));
-        if (strcmp(mc, "Jason") && strcmp(mc, "Andy"))
-        {
+        if (strcmp(mc, "Jason") && strcmp(mc, "Andy")) {
             fflush(stdin);
             break;
-        }
-        else
-        {
+        } else {
             printf("Invalid name. Please try again.");
             fflush(stdin);
         }
