@@ -1,18 +1,18 @@
 # Dialog Parser Project
 
 ## Overview
-This is a little gift for Jason and Andy.
-My coding bros!
 This is Jason's birthday present. Happy birthday Jason!!!
 
 ## What This Is All About
 This is a digital story game/project written entirely in C partially for the purpose of understanding how nodes, pointers, and GitHub work.
 The other half of this was for me to be funny and make a few laughs.
 
+This project has a tree somewhere in the order of 80 dialog nodes. It took many hours of work to make the node parsing functionality and of course the nodes themnselves. Enjoy!
+
 ## Usage
 Firstly, after obtaining the binary either via release or compiling, the program can be run as follows:
 ```
-./jameson
+./jameson.exe
 ```
 The program does not take any arguments.
 
