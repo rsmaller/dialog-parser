@@ -233,7 +233,7 @@ int main() {
     node *andyGenericNode1 = makeNode(paragraph2, 2, 30, 0, NULL);
     introNode1 -> nextNode0 = andyGenericNode1;
 
-    char *endParagraph0[5] = {"", "Why didn't you sit with them?", "What the hell is wrong with you?", "Stop being a dick.", "Ending 1/xxx: ~{You're An Asshole}~"};
+    char *endParagraph0[5] = {"", "Why didn't you sit with them?", "What the hell is wrong with you?", "Stop being a dick.", "Ending 1/6: ~{You're An Asshole}~"};
     node *ending0 = makeNode(endParagraph0, 5, 30, 0, NULL);
     introNode0 -> nextNode0 = ending0;
 
@@ -355,7 +355,7 @@ int main() {
     node *homeNode2 = makeNode(paragraph89, 2, 30, 0, NULL);
     homeNode1 -> nextNode0 = homeNode2;
 
-    char *paragraph90[3] = {"", "You got pissed on. What a way to go out." ,"Ending 2/xxx: ~{Golden Shower}~"};
+    char *paragraph90[3] = {"", "You got pissed on. What a way to go out." ,"Ending 2/6: ~{Golden Shower}~"};
     node *homeNodeEnd = makeNode(paragraph90, 3, 30, 0, NULL);
     homeNode2 -> nextNode0 = homeNodeEnd;
 
@@ -487,13 +487,49 @@ int main() {
     node *jasonFinalBossNode7 = makeQuestionNode(paragraph221, 3, 30, 1, "The thing we need to kill Jason.. his true weakness is?: ", "mental block\n");
     jasonFinalBossNode6 -> nextNode0 = jasonFinalBossNode7;
 
-    char *paragraph222[2] = {"", "You failed."};
-    node *failedNode1 = makeNode(paragraph222, 2, 0, 0, NULL);
+    char *paragraph222[3] = {"Jason", "It seems you've missed something still.", "I'm disappointed. I hoped you'd make this more interesting for me."};
+    node *failedNode1 = makeNode(paragraph222, 3, 30, 0, NULL);
     jasonFinalBossNode7 -> nextNode0 = failedNode1;
 
-    char *paragraph400 [2] = {"", "You succeeded."};
-    node *succeededNode1 = makeNode(paragraph400, 2, 0, 0, NULL);
+    char *paragraph223[9] = {"", "You were unable to keep Jason's volley of attacks at bay.", "You and Andy are pelted nonstop until you can't hold on anymore.", 
+        "But perhaps you've learned something in your final moments.", 
+        "Not equipped with the knowledge of Jason's weakness, you can feel the insurmountable fury and resentment that he possesses.", 
+        "The final thing you see is the darkly vast cave of Jason's heart, a projection onto you.", 
+        "As you swim through Jason's heart void to his mind, you hit a solid wall.",
+        "This is the end of the void.", "Ending 4/6: ~{Edge of the Void}~"};
+    node *failedNode2 = makeNode(paragraph223, 9, 30, 0, NULL);
+    failedNode1 -> nextNode0 = failedNode2;
+
+    char *paragraph400[4] = {"", "You did it.", "You figured it out.", "Are you proud of yourself? You should be."};
+    node *succeededNode1 = makeNode(paragraph400, 4, 30, 0, NULL);
     jasonFinalBossNode7 -> nextNode1 = succeededNode1;
+
+    char *paragraph401[3] = {"Jason", "I'm serious.", "You should be proud of yourself."};
+    node *succeededNode2 = makeNode(paragraph401, 3, 30, 0, NULL);
+    succeededNode1 -> nextNode0 = succeededNode2;
+
+    char *paragraph402[2] = {mc, "...What?"};
+    node *succeededNode3 = makeNode(paragraph402, 2, 30, 0, NULL);
+    succeededNode2 -> nextNode0 = succeededNode3;
+
+    char *paragraph403[2] = {"Jason", "Are you confused?"};
+    node *succeededNode4 = makeNode(paragraph403, 2, 30, 0, NULL);
+    succeededNode3 -> nextNode0 = succeededNode4;
+
+    char *paragraph404[2] = {mc, "Confused, not surprised.."};
+    node *succeededNode5 = makeNode(paragraph404, 2, 30, 0, NULL);
+    succeededNode4 -> nextNode0 = succeededNode5;
+
+    char *paragraph999[2] = {"", "When your disorientation settles, the end draws near."};
+    node *succeededNode6 = makeNode(paragraph999, 2, 30, 0, "Are you finished [y/n]?: ");
+    succeededNode5 -> nextNode0 = succeededNode6;
+
+    char *paragraph405[7] = {"Jason", "I figured you would be.", 
+        "Regardless, you've freed me from this vice. My mind is fading..", 
+        "I'm guessing you were expecting this part, since I'm assuming you read my notebook to have gotten this far.",
+        "But I'm glad..", "I would've had to kill you otherwise.", "Ending 5/6: ~{He's Gone}~"};
+    node *succeededNode7 = makeNode(paragraph405, 7, 30, 0, NULL);
+    succeededNode6 -> nextNode1 = succeededNode7;
 
     startFromNode(jasonFinalBossNode7);
 }
