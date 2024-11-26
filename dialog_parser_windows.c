@@ -5,6 +5,38 @@
 #include <string.h>
 #include <conio.h>
 
+int currentFreeArrayIndex = 0;
+int freeArraySize = 4;
+void **nodeFreeArray;
+
+void *smartMalloc(size_t size) {
+	void *mallocedPointer = malloc(size);
+	memset(mallocedPointer, 0, size);
+    if (currentFreeArrayIndex >= (int)(freeArraySize / 2)) {
+        freeArraySize *= 2;
+        nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * freeArraySize);
+    }
+	nodeFreeArray[currentFreeArrayIndex++] = mallocedPointer;
+	return mallocedPointer;
+}
+
+void *smartRealloc(void *oldMallocedPointer, size_t size) {
+	void *newMallocedPointer = realloc(oldMallocedPointer, size);
+	for (int i=0; i<freeArraySize; i++) {
+		if (nodeFreeArray[i] == oldMallocedPointer) {
+			nodeFreeArray[i] = newMallocedPointer;
+		}
+	}
+	return newMallocedPointer;
+}
+
+void freeFromArray(void **arrayToFree) {
+	for (int i=0; i<currentFreeArrayIndex; i++) {
+		free(arrayToFree[i]);
+	}
+	free(arrayToFree);
+}
+
 typedef struct node {
     char **paragraph;
     int paragraphLength;
@@ -19,8 +51,8 @@ typedef struct node {
 node *segFaultNode;
 
 node *makeNode(char **paragraph, int paragraphLength, int speed) {
-    node *newNode = (node *)malloc(sizeof(node));
-    newNode -> paragraph = (char **)malloc(sizeof(char *)*(unsigned int)paragraphLength);
+    node *newNode = (node *)smartMalloc(sizeof(node));
+    newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
     for (int i=0;i<paragraphLength;i++) {
         newNode -> paragraph[i] = paragraph[i];
     }
@@ -35,8 +67,8 @@ node *makeNode(char **paragraph, int paragraphLength, int speed) {
 }
 
 node *makeQuestionNode(char **paragraph, int paragraphLength, int speed, char question[]) {
-    node *newNode = (node *)malloc(sizeof(node));
-    newNode -> paragraph = (char **)malloc(sizeof(char *)*(unsigned int)paragraphLength);
+    node *newNode = (node *)smartMalloc(sizeof(node));
+    newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
     for (int i=0;i<paragraphLength;i++) {
         newNode -> paragraph[i] = paragraph[i];
     }
@@ -51,8 +83,8 @@ node *makeQuestionNode(char **paragraph, int paragraphLength, int speed, char qu
 }
 
 node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed, char question[], char answer[]) {
-    node *newNode = (node *)malloc(sizeof(node));
-    newNode -> paragraph = (char **)malloc(sizeof(char *)*(unsigned int)paragraphLength);
+    node *newNode = (node *)smartMalloc(sizeof(node));
+    newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
     for (int i=0;i<paragraphLength;i++) {
         newNode -> paragraph[i] = paragraph[i];
     }
@@ -93,7 +125,7 @@ void typeOutSentence(char sentence[], int speed) {
     if (!sentence) {
         return;
     }
-    char *dummy = (char *)malloc(1024);
+    char *dummy = (char *)smartMalloc(1024);
     for (int i=0;i<(int)strlen(sentence);i++) {
         sleepms(speed);
         if (_kbhit() && getch() == ' ') {
@@ -118,7 +150,7 @@ void typeOutSentence(char sentence[], int speed) {
 }
 
 char *askOpenQuestion(char sentence[], int speed) {
-    char *dummy = (char *)malloc(1024);
+    char *dummy = (char *)smartMalloc(1024);
     for (int i=0;i<(int)strlen(sentence);i++) {
         sleepms(speed);
         if (_kbhit() && getch() == ' ') {
@@ -165,7 +197,7 @@ int askBool(char sentence[], int speed, int openEndedness, char answer[]) {
 }
 
 void typeOutParagraph(char *paragraph[], int size, int speed) {// speaker is first element in paragraph array.
-    char *speaker = (char *)malloc((strlen(paragraph[0]) + 2) * sizeof(char)); 
+    char *speaker = (char *)smartMalloc((strlen(paragraph[0]) + 2) * sizeof(char)); 
     strcpy(speaker, paragraph[0]);
     strcat(speaker, ":");
     system("cls");
@@ -213,6 +245,7 @@ void freeParagraph(char *paragraph[], int length) {
 }
 
 int main() {
+    nodeFreeArray = (void **)malloc(sizeof(void *) * freeArraySize);
     disableEcho();
     char mc[201];
     while (1) {
@@ -584,5 +617,6 @@ int main() {
     trueEndNode11 -> nextNode0 = trueEndNode12;
 
     startFromNode(introNode0);
+    freeFromArray(nodeFreeArray);
     return 0;
 }
