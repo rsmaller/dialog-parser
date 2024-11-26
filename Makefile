@@ -1,6 +1,6 @@
 .SILENT:
 default:
-	gcc -o jameson ./dialog_parser_windows.c
+	gcc -o jameson ./dialog_parser.c
 
 clean:
 	del jameson.exe
