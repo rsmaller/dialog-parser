@@ -7,24 +7,24 @@
 
 int currentFreeArrayIndex = 0;
 int freeArraySize = 4;
-void **nodeFreeArray;
+void **mallocedPointerArray;
 
 void *smartMalloc(size_t size) {
 	void *mallocedPointer = malloc(size);
 	memset(mallocedPointer, 0, size);
     if (currentFreeArrayIndex >= (int)(freeArraySize / 2)) {
         freeArraySize *= 2;
-        nodeFreeArray = (void **)realloc(nodeFreeArray, sizeof(void *) * freeArraySize);
+        mallocedPointerArray = (void **)realloc(mallocedPointerArray, sizeof(void *) * freeArraySize);
     }
-	nodeFreeArray[currentFreeArrayIndex++] = mallocedPointer;
+	mallocedPointerArray[currentFreeArrayIndex++] = mallocedPointer;
 	return mallocedPointer;
 }
 
 void *smartRealloc(void *oldMallocedPointer, size_t size) {
 	void *newMallocedPointer = realloc(oldMallocedPointer, size);
 	for (int i=0; i<freeArraySize; i++) {
-		if (nodeFreeArray[i] == oldMallocedPointer) {
-			nodeFreeArray[i] = newMallocedPointer;
+		if (mallocedPointerArray[i] == oldMallocedPointer) {
+			mallocedPointerArray[i] = newMallocedPointer;
 		}
 	}
 	return newMallocedPointer;
@@ -245,7 +245,7 @@ void freeParagraph(char *paragraph[], int length) {
 }
 
 int main() {
-    nodeFreeArray = (void **)malloc(sizeof(void *) * freeArraySize);
+    mallocedPointerArray = (void **)malloc(sizeof(void *) * freeArraySize);
     disableEcho();
     char mc[201];
     while (1) {
@@ -617,6 +617,6 @@ int main() {
     trueEndNode11 -> nextNode0 = trueEndNode12;
 
     startFromNode(introNode0);
-    freeFromArray(nodeFreeArray);
+    freeFromArray(mallocedPointerArray);
     return 0;
 }
