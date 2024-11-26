@@ -45,7 +45,7 @@ typedef struct node {
     struct node *nextNode0;
     struct node *nextNode1;
     char *question;
-    char *openEndedAnswer;
+    unsigned long openEndedAnswerHash;
 } node;
 
 node *segFaultNode;
@@ -60,7 +60,7 @@ node *makeNode(char **paragraph, int paragraphLength, int speed) {
     newNode -> nextNode0 = NULL;
     newNode -> nextNode1 = NULL;
     newNode -> openEndedQuestion = 0;
-    newNode -> openEndedAnswer = NULL;
+    newNode -> openEndedAnswerHash = 0;
     newNode -> question = NULL;
     newNode -> paragraphLength = paragraphLength;
     return newNode;
@@ -76,13 +76,13 @@ node *makeQuestionNode(char **paragraph, int paragraphLength, int speed, char qu
     newNode -> nextNode0 = NULL;
     newNode -> nextNode1 = NULL;
     newNode -> openEndedQuestion = 0;
-    newNode -> openEndedAnswer = NULL;
+    newNode -> openEndedAnswerHash = 0;
     newNode -> question = question;
     newNode -> paragraphLength = paragraphLength;
     return newNode;
 }
 
-node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed, char question[], char answer[]) {
+node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed, char question[], unsigned long answerHash) {
     node *newNode = (node *)smartMalloc(sizeof(node));
     newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
     for (int i=0;i<paragraphLength;i++) {
@@ -93,9 +93,18 @@ node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed
     newNode -> nextNode1 = NULL;
     newNode -> openEndedQuestion = 1;
     newNode -> question = question; 
-    newNode -> openEndedAnswer = answer;
+    newNode -> openEndedAnswerHash = answerHash;
     newNode -> paragraphLength = paragraphLength;
     return newNode;
+}
+
+unsigned long hash(char *string) { // djb2 algorithm
+    unsigned long intHash = 5381;
+    int x;
+    while ((x = *string++)) {
+        intHash = ((intHash << 5) + intHash) + x;
+    }
+    return intHash;
 }
 
 void disableEcho() {
@@ -166,9 +175,9 @@ char *askOpenQuestion(char sentence[], int speed) {
     return dummy;
 }
 
-int askBool(char sentence[], int speed, int openEndedness, char answer[]) {
+int askBool(char sentence[], int speed, int openEndedness, unsigned long answerHash) {
     char *userInput;
-    if (!openEndedness && !answer) {
+    if (!openEndedness && !answerHash) {
         while (1) {
             system("cls");
             char input;
@@ -192,7 +201,7 @@ int askBool(char sentence[], int speed, int openEndedness, char answer[]) {
         }
     } else {
         userInput = askOpenQuestion(sentence, speed);
-        return !strcmp(userInput, answer);
+        return hash(userInput) == answerHash;
     }
 }
 
@@ -224,7 +233,7 @@ void startFromNode(node *nodeArg) {
     typeOutNode(currentNode);
     while (currentNode -> nextNode0 || currentNode -> nextNode1) {
         if (currentNode -> question) {
-            int outcome = askBool(currentNode -> question, currentNode -> speed, currentNode -> openEndedQuestion, currentNode -> openEndedAnswer);
+            int outcome = askBool(currentNode -> question, currentNode -> speed, currentNode -> openEndedQuestion, currentNode -> openEndedAnswerHash);
             if (outcome) {
                 currentNode = currentNode -> nextNode1;
             } else {
@@ -521,7 +530,7 @@ int main() {
     jasonFinalBossNode5 -> nextNode0 = jasonFinalBossNode6;
 
     char *paragraph221[3] = {"", "Well, have you?", "I mean, don't just wait around for me to tell you. Figure it out!"};
-    node *jasonFinalBossNode7 = makeOpenEndedQuestionNode(paragraph221, 3, 30, "The thing we need to kill Jason.. his true weakness is?: ", "mental block");
+    node *jasonFinalBossNode7 = makeOpenEndedQuestionNode(paragraph221, 3, 30, "The thing we need to kill Jason.. his true weakness is?: ", (unsigned long)15464911908201920657UL);
     jasonFinalBossNode6 -> nextNode0 = jasonFinalBossNode7;
 
     char *paragraph222[3] = {"Jason", "It seems you've missed something still.", "I'm disappointed. I hoped you'd make this more interesting for me."};
@@ -616,7 +625,7 @@ int main() {
     node *trueEndNode12 = makeNode(paragraph417, 2, 30);
     trueEndNode11 -> nextNode0 = trueEndNode12;
 
-    startFromNode(introNode0);
+    startFromNode(jasonFinalBossNode7);
     freeFromArray(mallocedPointerArray);
     return 0;
 }
