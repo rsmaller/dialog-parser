@@ -105,6 +105,9 @@ void typeOutSentence(char sentence[], int speed) {
         fflush(stdout);
     }
     char currentChar = getch();
+    if (currentChar == 3) { // CTRL-C
+            exit(-1);
+    }
     while (!_kbhit() && currentChar != '\r') { // hang until enter key is pressed
         if (currentChar == 3) { // CTRL-C
             exit(-1);
@@ -234,7 +237,7 @@ int main() {
     node *andyGenericNode1 = makeNode(paragraph2, 2, 30);
     introNode1 -> nextNode0 = andyGenericNode1;
 
-    char *endParagraph0[5] = {"", "Why didn't you sit with them?", "What the hell is wrong with you?", "Stop being a dick.", "Ending 1/6: ~{You're An Asshole}~"};
+    char *endParagraph0[5] = {"", "Why didn't you sit with them?", "What the fuck is wrong with you?", "Stop being a dick.", "Ending 1/6: ~{You're An Asshole}~"};
     node *ending0 = makeNode(endParagraph0, 5, 30);
     introNode0 -> nextNode0 = ending0;
 
@@ -242,7 +245,7 @@ int main() {
     node *andyGenericNode2 = makeNode(paragraph3, 2, 30);
     andyGenericNode1 -> nextNode0 = andyGenericNode2;
 
-    char *paragraph4[3] = {"Andy", "HOW DARE YOU INSULT MY FAVORITE SONG!", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
+    char *paragraph4[3] = {"Andy", "HOW DARE YOU INSULT MY FAVORITE SONG!", "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!!!!!"};
     node *andyGenericNode3 = makeQuestionNode(paragraph4, 3, 30, "Stick up for Andy [y/n]?: ");
     andyGenericNode2 -> nextNode0 = andyGenericNode3;
 
@@ -250,8 +253,8 @@ int main() {
     node *andyPositiveNode1 = makeNode(paragraph5, 2, 30);
     andyGenericNode3 -> nextNode1 = andyPositiveNode1;
 
-    char *paragraph6[2] = {mc, "Gotta agree with Jason. Song sucks."};
-    node *andyNegativeNode1 = makeNode(paragraph6, 2, 30);
+    char *paragraph6[3] = {mc, "Gotta agree with Jason. Song sucks some major doohickey.", "Famous Last Words is better."};
+    node *andyNegativeNode1 = makeNode(paragraph6, 3, 30);
     andyGenericNode3 -> nextNode0 = andyNegativeNode1;
 
     char *paragraph7[3] = {"Jason", "At least you have someone to share your terrible music taste with, Andy.", "I didn't think someone like that existed."};
@@ -262,7 +265,7 @@ int main() {
     node *andyNegativeNode2 = makeNode(paragraph8, 2, 30);
     andyNegativeNode1 -> nextNode0 = andyNegativeNode2;
 
-    char *paragraph9[3] = {"Jason", "Anyhow, today's going to be busy. I should probably head to the desk now.", "I'll see you guys around."};
+    char *paragraph9[3] = {"Jason", "Anyhow, today's going to be busy. I should probably head to the desk.", "I'll see you losers around."};
     node *andyGenericNode4 = makeNode(paragraph9, 3, 30);
     andyNegativeNode2 -> nextNode0 = andyGenericNode4;
     andyPositiveNode2 -> nextNode0 = andyGenericNode4;
@@ -272,8 +275,8 @@ int main() {
     andyGenericNode4 -> nextNode0 = andyGenericNode5;
 
     // start of don't read node.
-    char *paragraph11[6] = {"", "You open the notebook and read what appears to be complete gibberish.", "The words \"k talbloc nemlec nac\" are marked on the page in dark yellow ink.",
-    "Upon flipping to the second page, you notice it has a familiar yet unpleasant scent, but you can't quite place it...", "The other pages are filled with random bits of architecture and statistics notes that are of no interest to you.", 
+    char *paragraph11[6] = {"", "You open the notebook and read what appears to be complete gibberish.", "The words \"k talbloc nemlec nac\" are marked on the page in ink that is more dark yellow than brown.",
+    "Upon flipping to the second page, you notice the ink has a familiar yet unpleasant scent, but you can't quite place it...", "The other pages are filled with random bits of architecture and statistics notes that are of no interest to you.", 
     "In the half hour or so you spent fiddling through Jason's personal business instead of eating lunch, your class starts."};
     node *readJasonNode1 = makeNode(paragraph11, 6, 30);
     andyGenericNode5 -> nextNode1 = readJasonNode1;
@@ -311,8 +314,8 @@ int main() {
     node *dontReadJasonNode4 = makeNode(paragraph20, 2, 30);
     dontReadJasonNode3 -> nextNode0 = dontReadJasonNode4;
 
-    char *paragraph21[6] = {"", "You sit and eat your lunch (whatever that might be because I have no idea) with Andy.", "You feel nourished and ready for the challenges ahead.",
-    "As you finish your lunch, you see that it is time for class, so you head over a little early to get a headstart.", 
+    char *paragraph21[6] = {"", "You sit and eat your lunch (whatever that might be because I have no idea) with Andy.", "After the two of you eat and share a laugh, you feel nourished and ready for the challenges ahead.",
+    "You see that it is almost time for class, so you head over a little early to get a headstart.", 
     "You take out your textbook and plop it on the table. It makes a loud thump.", "As you finish setting up your desk and getting everything sorted, class starts..."};
     node *dontReadJasonNode5 = makeNode(paragraph21, 6, 30);
     dontReadJasonNode4 -> nextNode0 = dontReadJasonNode5;
@@ -343,7 +346,7 @@ int main() {
     node *intermediateNode6 = makeNode(paragraph86, 3, 30);
     intermediateNode5 -> nextNode0 = intermediateNode6;
 
-    char *paragraph87[3] = {"", "Apparently you can read thoughts. Who knew?", "After your mind reading session, your class ends. It's time to push forward."};
+    char *paragraph87[3] = {"", "Apparently you can read minds. Who knew?", "After your mind reading session, your class ends. It's time to push forward."};
     node *intermediateNode7 = makeQuestionNode(paragraph87, 3, 30, "Head home [y/n]?: ");
     intermediateNode6 -> nextNode0 = intermediateNode7;
 
@@ -375,7 +378,7 @@ int main() {
     node *openDoorNode2 = makeNode(paragraph93, 2, 30);
     openDoorNode1 -> nextNode0 = openDoorNode2;
 
-    char *paragraph94[4] = {"", "You feel an overwhelming presence from this man. It's nothing like you've ever experienced before.", "Yet, somehow, you feel comfortable and safe.", "You are at a loss for words."};
+    char *paragraph94[4] = {"", "You feel an overwhelming presence from this man. It's nothing like you've ever experienced before.", "Yet, somehow, you feel safe and comfortable here.", "You are at a loss for words."};
     node *openDoorNode3 = makeNode(paragraph94, 4, 30);
     openDoorNode2 -> nextNode0 = openDoorNode3;
 
@@ -392,12 +395,12 @@ int main() {
     openDoorNode5 -> nextNode0 = openDoorNode6;
     
     // monster conversion ending
-    char *paragraph98[6] = {"", "A dark and warm presence embraces you.", "It unravels every fiber of your being, and you feel yourself being changed.", "Everything is black, so you can't tell exactly how you've changed, but you know the person you once were no longer exists.", "There is no going back.", "Ending 3/6: ~{An Eternal Fate Stranger Than Death}~"};
+    char *paragraph98[6] = {"", "A dark and warm presence embraces you.", "It unravels every fiber of your being, and you feel yourself being changed.", "Everything is black, so you can't tell exactly how you've changed, but you know the person you once were no longer exists.", "There is no going back.", "Ending 3/6: ~{A Fate Worse Than Death}~"};
     node *cursedEndNode = makeNode(paragraph98, 6, 30);
     openDoorNode6 -> nextNode0 = cursedEndNode;
 
     // post door nodes
-    char *paragraph200[7] = {"", "You find yourself in a dark corridor once again.", "The ground around you feels somewhat.. jagged?", "You can't exactly place what the feeling is, though there is an air of instability and uncertainty.", "This hall is darker than you remember it being.", "You walk down the hall for a little bit hoping to catch a glimpse of something recognizable.", "What you find is somewhat unexpected..."};
+    char *paragraph200[7] = {"", "You find yourself in a dark corridor once again.", "The ground around you feels somewhat.. jagged?", "You can't exactly place what the feeling is, though there is an air of instability and uncertainty.", "This hall is darker than you remember it being.", "You walk down the hall for a little bit hoping to catch a glimpse of something recognizable.", "What you find is unexpected to say the least..."};
     node *progressedIntermediateNode1 = makeNode(paragraph200, 7, 30);
     openDoorNode6 -> nextNode1 = progressedIntermediateNode1;
     noHomeNode1 -> nextNode0 = progressedIntermediateNode1;
@@ -426,7 +429,7 @@ int main() {
     node *andyGlitchNode1 = makeNode(paragraph206, 2, 0);
     andyProgressedNode5 -> nextNode0 = andyGlitchNode1;
 
-    char *paragraph207[5] = {"", "You examine Andy closely, interested in his current condition.", "As you look, reality sets in. Something is terribly wrong, yet...", "It's fixable.. this is something you've seen before.", "It's the same thing Brian stores in his Receptacle."};
+    char *paragraph207[5] = {"", "You examine Andy closely, interested in his current condition.", "As you look, reality sets in. Something is terribly wrong, yet...", "It's fixable.. this is something you've seen before.", "It can be cured with the same power Brian stores in his Receptacle."};
     node *andyGlitchNode2 = makeNode(paragraph207, 5, 30);
     andyGlitchNode1 -> nextNode0 = andyGlitchNode2;
 
@@ -505,8 +508,8 @@ int main() {
     node *succeededNode1 = makeNode(paragraph400, 5, 30);
     jasonFinalBossNode7 -> nextNode1 = succeededNode1;
 
-    char *paragraph401[3] = {"Jason", "I'm serious.", "You should be proud of yourself."};
-    node *succeededNode2 = makeNode(paragraph401, 3, 30);
+    char *paragraph401[2] = {"Jason", "Seriously, you should be proud of yourself."};
+    node *succeededNode2 = makeNode(paragraph401, 2, 30);
     succeededNode1 -> nextNode0 = succeededNode2;
 
     char *paragraph402[2] = {mc, "...What?"};
@@ -517,7 +520,7 @@ int main() {
     node *succeededNode4 = makeNode(paragraph403, 2, 30);
     succeededNode3 -> nextNode0 = succeededNode4;
 
-    char *paragraph404[2] = {mc, "Confused, not surprised.."};
+    char *paragraph404[2] = {mc, "Confused, but not surprised.."};
     node *succeededNode5 = makeNode(paragraph404, 2, 30);
     succeededNode4 -> nextNode0 = succeededNode5;
 
@@ -527,15 +530,59 @@ int main() {
 
     char *paragraph405[7] = {"Jason", "I figured you would be.", 
         "Regardless, you've freed me from this vice. My mind is fading..", 
-        "I'm guessing you were expecting this part, since I'm assuming you read my notebook to have gotten this far.",
+        "I'm guessing you were expecting this part, since I assume you've read my notebook to have gotten this far.",
         "But I'm glad..", "I would've had to kill you otherwise.", "Ending 5/6: ~{He's Gone}~"};
     node *succeededNode7 = makeNode(paragraph405, 7, 30);
     succeededNode6 -> nextNode1 = succeededNode7;
 
-    char *paragraph406[3] = {"", "You've decided you're not done yet. There's one final thing you have to do."};
-    node *trueEndNode1 = makeNode(paragraph406, 3, 30);
+    char *paragraph406[5] = {"", "Jason fades away to nothing, content with his mind being freed.", "Something nags at your mind, though.", "You've decided you're not done yet. There's one final thing you have to do.", "WARNING: This is the true ending. If you're not ready for it or you haven't explored everything else, go back! (Ctrl-C to exit or Enter to continue)"};
+    node *trueEndNode1 = makeNode(paragraph406, 5, 30);
     succeededNode6 -> nextNode0 = trueEndNode1;
 
-    startFromNode(jasonFinalBossNode7);
+    char *paragraph407[2] = {mc, "Hey Andy, how about we go to that MCR concert?"};
+    node *trueEndNode2 = makeNode(paragraph407, 2, 30);
+    trueEndNode1 -> nextNode0 = trueEndNode2;
+
+    char *paragraph408[2] = {"Andy", "YOOOOOO W!!!!!!"};
+    node *trueEndNode3 = makeNode(paragraph408, 2, 30);
+    trueEndNode2 -> nextNode0 = trueEndNode3;
+
+    char *paragraph409[2] = {mc, "I'll take that as a yes."};
+    node *trueEndNode4 = makeNode(paragraph409, 2, 30);
+    trueEndNode3 -> nextNode0 = trueEndNode4;
+
+    char *paragraph410[3] = {"", "Sooner or later, months pass by.", "At the MCR concert, you and Andy share a romantic moment over the blood curdling screams of goth women and little kids, the latter of whom probably shouldn't be at a concert where the songs are about drugs and death."};
+    node *trueEndNode5 = makeNode(paragraph410, 3, 30);
+    trueEndNode4 -> nextNode0 = trueEndNode5;
+
+    char *paragraph411[2] = {"Andy", "I'M SO GLAD WE CAME HERE!!!!!!"};
+    node *trueEndNode6 = makeNode(paragraph411, 2, 30);
+    trueEndNode5 -> nextNode0 = trueEndNode6;
+
+    char *paragraph412[2] = {mc, "ME TOO!!!!!!!"};
+    node *trueEndNode7 = makeNode(paragraph412, 2, 30);
+    trueEndNode6 -> nextNode0 = trueEndNode7;
+
+    char *paragraph413[4] = {"", "After Famous Last Words and Cemetery Drive play, you and Andy have had your fun.", "You're both very tired by the end of it.", "It was romantic nonetheless."};
+    node *trueEndNode8 = makeNode(paragraph413, 4, 30);
+    trueEndNode7 -> nextNode0 = trueEndNode8;
+
+    char *paragraph414[2] = {mc, "I had a lot of fun tonight."};
+    node *trueEndNode9 = makeNode(paragraph414, 2, 30);
+    trueEndNode8 -> nextNode0 = trueEndNode9;
+
+    char *paragraph415[3] = {"Andy", "Me too.", "So..."};
+    node *trueEndNode10 = makeNode(paragraph415, 3, 30);
+    trueEndNode9 -> nextNode0 = trueEndNode10;
+
+    char *paragraph416[2] = {mc, "Yes?"};
+    node *trueEndNode11 = makeNode(paragraph416, 2, 30);
+    trueEndNode10 -> nextNode0 = trueEndNode11;
+
+    char *paragraph417[2] = {"Andy", "When we fucking?"};
+    node *trueEndNode12 = makeNode(paragraph417, 2, 30);
+    trueEndNode11 -> nextNode0 = trueEndNode12;
+
+    startFromNode(introNode0);
     return 0;
 }
