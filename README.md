@@ -10,7 +10,7 @@ This is a digital story game/project written entirely in C partially for the pur
 The other half of this was for me to be funny and make a few laughs.
 
 ## Usage
-Firstly, after compiling the project, the program can be run as follows:
+Firstly, after obtaining the binary either via release or compiling, the program can be run as follows:
 ```
 ./jameson
 ```
