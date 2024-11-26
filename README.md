@@ -1,8 +1,7 @@
 # Dialog Parser Project
 
 ## Overview
-This is a little gift for Jason and Andy.
-My coding bros!
+This is a little gift for a my coding bros! (Andy's already seen this.)
 This is Jason's birthday present. Happy birthday Jason!!!
 
 ## What This Is All About
