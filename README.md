@@ -12,7 +12,7 @@ This project has a tree somewhere in the order of 80 dialog nodes. It took many 
 ## Usage
 Firstly, after obtaining the binary either via release or compiling, the program can be run as follows:
 ```
-./jameson
+./jameson.exe
 ```
 The program does not take any arguments.
 
