@@ -296,7 +296,7 @@ int main() {
     char mc[201];
     while (1) {
         system("cls");
-        strcpy(mc, askOpenQuestion("Please enter your name: ", 0));
+        strcpy(mc, askOpenQuestion("Please enter your name: ", 30));
         if (strcmp(mc, "Jason") && strcmp(mc, "Andy")) {
             fflush(stdin);
             break;
@@ -518,8 +518,8 @@ int main() {
     andyGlitchNode2 -> nextNode0 = andyGlitchNode3;
 
     // segfault ending
-    char *paragraph209[3] = {"", "You fail to summon the power to save Andy from the disease ripping at his soul.", "The leaked memory consumes everything in its wake, leaving nothing left. Reality is broken.."};
-    node *segFaultEnd = makeFunctionNode(paragraph209, 3, 30, &segfault);
+    char *paragraph209[4] = {"", "You fail to summon the power to save Andy from the disease ripping at his soul.", "The leaked memory consumes everything in its wake, leaving nothing left. Reality is broken..", "Ending 3/6: ~{Check Your Mallocs Kids!}~"};
+    node *segFaultEnd = makeFunctionNode(paragraph209, 4, 30, &segfault);
     andyGlitchNode3 -> nextNode0 = segFaultEnd;
         
     char *paragraph210[3] = {"", "It burns, but you're able to prevent Andy's memory from leaking everywhere and destroying everything.", "He seems to have gone mostly back to normal."};
@@ -642,10 +642,10 @@ int main() {
     node *trueEndNode7 = makeNode(paragraph412, 2, 30);
     trueEndNode6 -> nextNode0 = trueEndNode7;
 
-    char *paragraph413[4] = {"", "After Famous Last Words and Cemetery Drive play, you and Andy have had your fun.", "You're both very tired by the end of it.", "It was romantic nonetheless."};
-    node *trueEndNode8 = makeNode(paragraph413, 4, 30);
+    char *paragraph413[5] = {"", "After Famous Last Words and Cemetery Drive play, you and Andy have had your fun.", "You're both very tired by the end of it.", "It was romantic nonetheless.", "Ending 6/6: ~{True Love}~"};
+    node *trueEndNode8 = makeNode(paragraph413, 5, 30);
     trueEndNode7 -> nextNode0 = trueEndNode8;
-
+    
     char *paragraph414[2] = {mc, "I had a lot of fun tonight."};
     node *trueEndNode9 = makeNode(paragraph414, 2, 30);
     trueEndNode8 -> nextNode0 = trueEndNode9;
@@ -662,7 +662,7 @@ int main() {
     node *trueEndNode12 = makeNode(paragraph417, 2, 30);
     trueEndNode11 -> nextNode0 = trueEndNode12;
 
-    startFromNode(andyGenericNode5);
+    startFromNode(trueEndNode6);
     freeFromArray(mallocedPointerArray);
     return 0;
 }
