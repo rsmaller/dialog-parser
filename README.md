@@ -20,6 +20,8 @@ When the program is first run, you will be prompted to enter your name. Any open
 
 Closed-ended questions, however, will show a `[y\n]?:` prompt. Input is similarly recorded when you press `Enter`, but these questions will not record input unless the character `y` or the character `n` are given as input.
 
+Be careful! Some dialog options will be closed off if you make the wrong choices.
+
 Normally, dialog and questions are printed out character-by-character to perform a sort of typing animation on-screen. The `Space` key will skip the typing animation for a piece of dialog or a question.
 
 After the typing animation is complete, either by pressing `Space` to skip it or simply waiting, pressing `Enter` will progress any dialog.
