@@ -46,9 +46,8 @@ typedef struct node {
     struct node *nextNode1;
     char *question;
     unsigned long openEndedAnswerHash;
+    void (*functionPointer)(void);
 } node;
-
-node *segFaultNode;
 
 node *makeNode(char **paragraph, int paragraphLength, int speed) {
     node *newNode = (node *)smartMalloc(sizeof(node));
@@ -63,6 +62,24 @@ node *makeNode(char **paragraph, int paragraphLength, int speed) {
     newNode -> openEndedAnswerHash = 0;
     newNode -> question = NULL;
     newNode -> paragraphLength = paragraphLength;
+    newNode -> functionPointer = NULL;
+    return newNode;
+}
+
+node *makeFunctionNode(char **paragraph, int paragraphLength, int speed, void (*functionPointer)(void)) { // function runs after node is typed out.
+    node *newNode = (node *)smartMalloc(sizeof(node));
+    newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
+    for (int i=0;i<paragraphLength;i++) {
+        newNode -> paragraph[i] = paragraph[i];
+    }
+    newNode -> speed = speed;
+    newNode -> nextNode0 = NULL;
+    newNode -> nextNode1 = NULL;
+    newNode -> openEndedQuestion = 0;
+    newNode -> openEndedAnswerHash = 0;
+    newNode -> question = NULL;
+    newNode -> paragraphLength = paragraphLength;
+    newNode -> functionPointer = functionPointer;
     return newNode;
 }
 
@@ -79,6 +96,7 @@ node *makeQuestionNode(char **paragraph, int paragraphLength, int speed, char qu
     newNode -> openEndedAnswerHash = 0;
     newNode -> question = question;
     newNode -> paragraphLength = paragraphLength;
+    newNode -> functionPointer = NULL;
     return newNode;
 }
 
@@ -95,6 +113,7 @@ node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed
     newNode -> question = question; 
     newNode -> openEndedAnswerHash = answerHash;
     newNode -> paragraphLength = paragraphLength;
+    newNode -> functionPointer = NULL;
     return newNode;
 }
 
@@ -223,8 +242,8 @@ void typeOutParagraph(char *paragraph[], int size, int speed) {// speaker is fir
 
 void typeOutNode(node *nodeArg) {
     typeOutParagraph(nodeArg -> paragraph, nodeArg -> paragraphLength, nodeArg -> speed);
-    if (nodeArg == segFaultNode) {
-        segfault();
+    if (nodeArg -> functionPointer) {
+        nodeArg -> functionPointer();
     }
 }
 
@@ -481,8 +500,7 @@ int main() {
 
     // segfault ending
     char *paragraph209[3] = {"", "You fail to summon the power to save Andy from the disease ripping at his soul.", "The leaked memory consumes everything in its wake, leaving nothing left. Reality is broken.."};
-    node *segFaultEnd = makeNode(paragraph209, 3, 30);
-    segFaultNode = segFaultEnd;
+    node *segFaultEnd = makeFunctionNode(paragraph209, 3, 30, &segfault);
     andyGlitchNode3 -> nextNode0 = segFaultEnd;
         
     char *paragraph210[3] = {"", "It burns, but you're able to prevent Andy's memory from leaking everywhere and destroying everything.", "He seems to have gone mostly back to normal."};
@@ -625,7 +643,7 @@ int main() {
     node *trueEndNode12 = makeNode(paragraph417, 2, 30);
     trueEndNode11 -> nextNode0 = trueEndNode12;
 
-    startFromNode(jasonFinalBossNode7);
+    startFromNode(segFaultEnd);
     freeFromArray(mallocedPointerArray);
     return 0;
 }
