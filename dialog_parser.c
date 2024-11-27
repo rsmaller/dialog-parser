@@ -5,9 +5,14 @@
 #include <string.h>
 #include <conio.h>
 
+//  global garbage collector variables
 int currentFreeArrayIndex = 0;
 int freeArraySize = 4;
 void **mallocedPointerArray;
+
+//  dialog flow conditionals
+int blessing = 0;
+int readNotebook = 0;
 
 void *smartMalloc(size_t size) {
 	void *mallocedPointer = malloc(size);
@@ -47,6 +52,8 @@ typedef struct node {
     char *question;
     unsigned long openEndedAnswerHash;
     void (*functionPointer)(void);
+    int *conditionToChange;
+    int *conditionToRequire;
 } node;
 
 node *makeNode(char **paragraph, int paragraphLength, int speed) {
@@ -63,6 +70,8 @@ node *makeNode(char **paragraph, int paragraphLength, int speed) {
     newNode -> question = NULL;
     newNode -> paragraphLength = paragraphLength;
     newNode -> functionPointer = NULL;
+    newNode -> conditionToChange = NULL;
+    newNode -> conditionToRequire = NULL;
     return newNode;
 }
 
@@ -80,10 +89,12 @@ node *makeFunctionNode(char **paragraph, int paragraphLength, int speed, void (*
     newNode -> question = NULL;
     newNode -> paragraphLength = paragraphLength;
     newNode -> functionPointer = functionPointer;
+    newNode -> conditionToChange = NULL;
+    newNode -> conditionToRequire = NULL;
     return newNode;
 }
 
-node *makeQuestionNode(char **paragraph, int paragraphLength, int speed, char question[]) {
+node *makeQuestionNode(char **paragraph, int paragraphLength, int speed, char question[], int *conditionChanger, int *conditionRequirement) {
     node *newNode = (node *)smartMalloc(sizeof(node));
     newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
     for (int i=0;i<paragraphLength;i++) {
@@ -97,10 +108,12 @@ node *makeQuestionNode(char **paragraph, int paragraphLength, int speed, char qu
     newNode -> question = question;
     newNode -> paragraphLength = paragraphLength;
     newNode -> functionPointer = NULL;
+    newNode -> conditionToChange = conditionChanger;
+    newNode -> conditionToRequire = conditionRequirement;
     return newNode;
 }
 
-node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed, char question[], unsigned long answerHash) {
+node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed, char question[], unsigned long answerHash, int *conditionRequirement) {
     node *newNode = (node *)smartMalloc(sizeof(node));
     newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
     for (int i=0;i<paragraphLength;i++) {
@@ -114,6 +127,8 @@ node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed
     newNode -> openEndedAnswerHash = answerHash;
     newNode -> paragraphLength = paragraphLength;
     newNode -> functionPointer = NULL;
+    newNode -> conditionToChange = NULL;
+    newNode -> conditionToRequire = conditionRequirement;
     return newNode;
 }
 
@@ -253,7 +268,10 @@ void startFromNode(node *nodeArg) {
     while (currentNode -> nextNode0 || currentNode -> nextNode1) {
         if (currentNode -> question) {
             int outcome = askBool(currentNode -> question, currentNode -> speed, currentNode -> openEndedQuestion, currentNode -> openEndedAnswerHash);
-            if (outcome) {
+            if (currentNode -> conditionToChange) {
+                *(currentNode -> conditionToChange) = outcome;
+            }
+            if (outcome && (currentNode -> conditionToRequire == NULL || *(currentNode -> conditionToRequire))) {
                 currentNode = currentNode -> nextNode1;
             } else {
                 currentNode = currentNode -> nextNode0;
@@ -289,7 +307,7 @@ int main() {
     }
 
     char *introParagraph[2] = {"", "You walk into the food court and see Andy and Jason sitting together, talking about music."};
-    node *introNode0 = makeQuestionNode(introParagraph, 2, 30, "Join them [y/n]?: ");
+    node *introNode0 = makeQuestionNode(introParagraph, 2, 30, "Join them [y/n]?: ", NULL, NULL);
     char *paragraph1[2] = {"Jason", "Hey Andy, what's your favorite MCR song?"};
     node *introNode1 = makeNode(paragraph1, 2, 30);
     introNode0 -> nextNode1 = introNode1;
@@ -307,7 +325,7 @@ int main() {
     andyGenericNode1 -> nextNode0 = andyGenericNode2;
 
     char *paragraph4[3] = {"Andy", "HOW DARE YOU INSULT MY FAVORITE SONG!", "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!!!!!"};
-    node *andyGenericNode3 = makeQuestionNode(paragraph4, 3, 30, "Stick up for Andy [y/n]?: ");
+    node *andyGenericNode3 = makeQuestionNode(paragraph4, 3, 30, "Stick up for Andy [y/n]?: ", NULL, NULL);
     andyGenericNode2 -> nextNode0 = andyGenericNode3;
 
     char *paragraph5[2] = {mc, "Hey, I actually like that song."};
@@ -332,7 +350,7 @@ int main() {
     andyPositiveNode2 -> nextNode0 = andyGenericNode4;
 
     char *paragraph10[2] = {"", "After Jason gets up and leaves, you notice he forgot one of his notebooks and left it on the table."};
-    node *andyGenericNode5 = makeQuestionNode(paragraph10, 2, 30, "Read the notebook [y/n]?: ");
+    node *andyGenericNode5 = makeQuestionNode(paragraph10, 2, 30, "Read the notebook [y/n]?: ", &readNotebook, NULL);
     andyGenericNode4 -> nextNode0 = andyGenericNode5;
 
     // start of don't read node.
@@ -408,7 +426,7 @@ int main() {
     intermediateNode5 -> nextNode0 = intermediateNode6;
 
     char *paragraph87[3] = {"", "Apparently you can read minds. Who knew?", "After your mind reading session, your class ends. It's time to push forward."};
-    node *intermediateNode7 = makeQuestionNode(paragraph87, 3, 30, "Head home [y/n]?: ");
+    node *intermediateNode7 = makeQuestionNode(paragraph87, 3, 30, "Head home [y/n]?: ", NULL, NULL);
     intermediateNode6 -> nextNode0 = intermediateNode7;
 
     // (don't) go home
@@ -427,7 +445,7 @@ int main() {
     // don't go home
     char *paragraph91[5] = {"", "You decide not to head home and loiter around school for a while.", "As you are walking around, you notice a highly decorated door with what looks like a marble handle.",
     "It's surprising you haven't noticed this before...", "As you step closer, you feel a warm and welcoming presence behind the door."};
-    node *noHomeNode1 = makeQuestionNode(paragraph91, 5, 30, "Open the door [y/n]?: ");
+    node *noHomeNode1 = makeQuestionNode(paragraph91, 5, 30, "Open the door [y/n]?: ", NULL, NULL);
     intermediateNode7 -> nextNode0 = noHomeNode1;
 
     // open the door ending
@@ -452,17 +470,18 @@ int main() {
     openDoorNode4 -> nextNode0 = openDoorNode5;
 
     char *paragraph97[3] = {"The Elder God, Ryab", "There are ancient evils inhabiting this establishment, like few you've ever seen.", "However, I can protect you from their curses, should you permit it."};
-    node *openDoorNode6 = makeQuestionNode(paragraph97, 3, 30, "Will you accept my blessing [y/n]?: ");
+    node *openDoorNode6 = makeQuestionNode(paragraph97, 3, 30, "Will you accept my blessing [y/n]?: ", &blessing, NULL);
     openDoorNode5 -> nextNode0 = openDoorNode6;
     
     // monster conversion ending
-    char *paragraph98[6] = {"", "A dark and warm presence embraces you.", "It unravels every fiber of your being, and you feel yourself being changed.", "Everything is black, so you can't tell exactly how you've changed, but you know the person you once were no longer exists.", "There is no going back.", "Ending 3/6: ~{A Fate Worse Than Death}~"};
-    node *cursedEndNode = makeNode(paragraph98, 6, 30);
-    openDoorNode6 -> nextNode0 = cursedEndNode;
+    // char *paragraph98[6] = {"", "A dark and warm presence embraces you.", "It unravels every fiber of your being, and you feel yourself being changed.", "Everything is black, so you can't tell exactly how you've changed, but you know the person you once were no longer exists.", "There is no going back.", "Ending 3/6: ~{A Fate Worse Than Death}~"};
+    // node *cursedEndNode = makeNode(paragraph98, 6, 30);
+    // openDoorNode6 -> nextNode0 = cursedEndNode;
 
     // post door nodes
     char *paragraph200[7] = {"", "You find yourself in a dark corridor once again.", "The ground around you feels somewhat.. jagged?", "You can't exactly place what the feeling is, though there is an air of instability and uncertainty.", "This hall is darker than you remember it being.", "You walk down the hall for a little bit hoping to catch a glimpse of something recognizable.", "What you find is unexpected to say the least..."};
     node *progressedIntermediateNode1 = makeNode(paragraph200, 7, 30);
+    openDoorNode6 -> nextNode0 = progressedIntermediateNode1;
     openDoorNode6 -> nextNode1 = progressedIntermediateNode1;
     noHomeNode1 -> nextNode0 = progressedIntermediateNode1;
 
@@ -495,7 +514,7 @@ int main() {
     andyGlitchNode1 -> nextNode0 = andyGlitchNode2;
 
     char *paragraph208[3] = {mc, "Ancient, arcane power..", "I must use it to save him."};
-    node *andyGlitchNode3 = makeQuestionNode(paragraph208, 3, 30, "gcc -o test -fno-stack-protector -O3 [y/n]?: ");
+    node *andyGlitchNode3 = makeQuestionNode(paragraph208, 3, 30, "gcc -o test -fno-stack-protector -O3 [y/n]?: ", NULL, &blessing);
     andyGlitchNode2 -> nextNode0 = andyGlitchNode3;
 
     // segfault ending
@@ -548,7 +567,7 @@ int main() {
     jasonFinalBossNode5 -> nextNode0 = jasonFinalBossNode6;
 
     char *paragraph221[3] = {"", "Well, have you?", "I mean, don't just wait around for me to tell you. Figure it out!"};
-    node *jasonFinalBossNode7 = makeOpenEndedQuestionNode(paragraph221, 3, 30, "The thing we need to kill Jason.. his true weakness is?: ", (unsigned long)15464911908201920657UL);
+    node *jasonFinalBossNode7 = makeOpenEndedQuestionNode(paragraph221, 3, 30, "The thing we need to kill Jason.. his true weakness is?: ", (unsigned long)15464911908201920657UL, &readNotebook);
     jasonFinalBossNode6 -> nextNode0 = jasonFinalBossNode7;
 
     char *paragraph222[3] = {"Jason", "It seems you've missed something still.", "I'm disappointed. I hoped you'd make this more interesting for me."};
@@ -585,7 +604,7 @@ int main() {
     succeededNode4 -> nextNode0 = succeededNode5;
 
     char *paragraph999[2] = {"", "When your disorientation settles, the end draws near."};
-    node *succeededNode6 = makeQuestionNode(paragraph999, 2, 30, "Are you finished [y/n]?: ");
+    node *succeededNode6 = makeQuestionNode(paragraph999, 2, 30, "Are you finished [y/n]?: ", NULL, NULL);
     succeededNode5 -> nextNode0 = succeededNode6;
 
     char *paragraph405[7] = {"Jason", "I figured you would be.", 
@@ -643,7 +662,7 @@ int main() {
     node *trueEndNode12 = makeNode(paragraph417, 2, 30);
     trueEndNode11 -> nextNode0 = trueEndNode12;
 
-    startFromNode(segFaultEnd);
+    startFromNode(andyGenericNode5);
     freeFromArray(mallocedPointerArray);
     return 0;
 }
