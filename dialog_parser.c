@@ -676,7 +676,7 @@ int main() {
     node *trueEndNode13 = makeFunctionNode(paragraph418, 4, 30, &secret);
     trueEndNode12 -> nextNode0 = trueEndNode13;
 
-    startFromNode(trueEndNode12);
+    startFromNode(introNode0);
     freeFromArray(mallocedPointerArray);
     return 0;
 }
