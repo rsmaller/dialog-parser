@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <string.h>
 #include <conio.h>
+#include "fileoperations.h"
 
 //  global garbage collector variables
 int currentFreeArrayIndex = 0;
@@ -284,6 +285,14 @@ void startFromNode(node *nodeArg) {
     exit(0);
 }
 
+void secret() {
+    if (askBool("If you're Jason, enter the secret passcode below to get a special text file: ", 30, 1, (unsigned long)1015232959UL)) {
+        writeSecretMessageToFile();
+    }
+    system("cls");
+    typeOutSentence("Thank you for playing!", 30);
+}
+
 void freeParagraph(char *paragraph[], int length) {
     for (int i=0;i<length;i++) {
         free(paragraph[i]);
@@ -297,11 +306,12 @@ int main() {
     while (1) {
         system("cls");
         strcpy(mc, askOpenQuestion("Please enter your name: ", 30));
-        if (strcmp(mc, "Jason") && strcmp(mc, "Andy")) {
+        if (strcmp(mc, "Jason") && strcmp(mc, "Andy") && strcmp(mc, "jason") && strcmp(mc, "andy")) {
             fflush(stdin);
             break;
         } else {
-            printf("Invalid name. Please try again.");
+            system("cls");
+            typeOutSentence("Invalid name. Please try again.", 30);
             fflush(stdin);
         }
     }
@@ -662,7 +672,11 @@ int main() {
     node *trueEndNode12 = makeNode(paragraph417, 2, 30);
     trueEndNode11 -> nextNode0 = trueEndNode12;
 
-    startFromNode(introNode0);
+    char *paragraph418[4] = {"", "", "THE END.", "So, I hope you enjoyed the game!!"};
+    node *trueEndNode13 = makeFunctionNode(paragraph418, 4, 30, &secret);
+    trueEndNode12 -> nextNode0 = trueEndNode13;
+
+    startFromNode(trueEndNode12);
     freeFromArray(mallocedPointerArray);
     return 0;
 }
