@@ -193,6 +193,24 @@ void typeOutSentence(char sentence[], int speed) {
     free(dummy);
 }
 
+void typeOutSentenceWithoutHang(char sentence[], int speed) {
+    if (!sentence) {
+        return;
+    }
+    char *dummy = (char *)smartMalloc(1024);
+    for (int i=0;i<(int)strlen(sentence);i++) {
+        sleepms(speed);
+        if (_kbhit() && getch() == ' ') {
+            char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
+            printf("%s", restOfString);
+            break;
+        }
+        printf("%c", sentence[i]);
+        fflush(stdout);
+    }
+    free(dummy);
+}
+
 char *askOpenQuestion(char sentence[], int speed) {
     char *dummy = (char *)smartMalloc(1024);
     for (int i=0;i<(int)strlen(sentence);i++) {
@@ -286,11 +304,23 @@ void startFromNode(node *nodeArg) {
 }
 
 void secret() {
-    if (askBool("If you're Jason, enter the secret passcode below to get a special text file: ", 30, 1, (unsigned long)1015232959UL)) {
-        writeSecretMessageToFile();
-    }
+    typeOutSentence("So, I hope you enjoyed playing the game!", 30);
     system("cls");
-    typeOutSentence("Thank you for playing!", 30);
+    typeOutSentenceWithoutHang("Thank you for playing!", 30);
+    char currentChar = getch();
+    while (!_kbhit() && currentChar != '\r') { // hang until enter key is pressed
+        if (currentChar == 3) {
+            exit(-1);
+        }
+        else if (currentChar == 2) {
+            system("cls");
+            if (askBool("If you're Jason, enter the secret passcode below to get a special text file: ", 30, 1, (unsigned long)1015232959UL)) {
+                writeSecretMessageToFile();
+            }
+            break;
+        }
+        currentChar = getch();
+    } 
 }
 
 void freeParagraph(char *paragraph[], int length) {
@@ -672,11 +702,11 @@ int main() {
     node *trueEndNode12 = makeNode(paragraph417, 2, 30);
     trueEndNode11 -> nextNode0 = trueEndNode12;
 
-    char *paragraph418[4] = {"", "", "THE END.", "So, I hope you enjoyed the game!!"};
-    node *trueEndNode13 = makeFunctionNode(paragraph418, 4, 30, &secret);
+    char *paragraph418[3] = {"", "", "THE END."};
+    node *trueEndNode13 = makeFunctionNode(paragraph418, 3, 30, &secret);
     trueEndNode12 -> nextNode0 = trueEndNode13;
 
-    startFromNode(introNode0);
+    startFromNode(trueEndNode12);
     freeFromArray(mallocedPointerArray);
     return 0;
 }
