@@ -20,7 +20,7 @@ void *smartMalloc(size_t size) {
 	memset(mallocedPointer, 0, size);
     if (currentFreeArrayIndex >= (int)(freeArraySize / 2)) {
         freeArraySize *= 2;
-        mallocedPointerArray = (void **)realloc(mallocedPointerArray, sizeof(void *) * freeArraySize);
+        mallocedPointerArray = (void **)realloc(mallocedPointerArray, sizeof(void *) * (unsigned long)freeArraySize);
     }
 	mallocedPointerArray[currentFreeArrayIndex++] = mallocedPointer;
 	return mallocedPointer;
@@ -137,13 +137,13 @@ unsigned long hash(char *string) { // djb2 algorithm
     unsigned long intHash = 5381;
     int x;
     while ((x = *string++)) {
-        intHash = ((intHash << 5) + intHash) + x;
+        intHash = ((intHash << 5) + intHash) + (unsigned long)x;
     }
     return intHash;
 }
 
 void disableEcho() {
-    DWORD consoleMode = ~ENABLE_LINE_INPUT; // 0 |
+    DWORD consoleMode = (DWORD)~ENABLE_LINE_INPUT; // 0 |
     HANDLE stdOutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleMode(stdOutHandle, consoleMode);
 }
@@ -180,7 +180,7 @@ void typeOutSentence(char sentence[], int speed) {
         printf("%c", sentence[i]);
         fflush(stdout);
     }
-    char currentChar = getch();
+    char currentChar = (char)getch();
     if (currentChar == 3) { // CTRL-C
             exit(-1);
     }
@@ -188,7 +188,7 @@ void typeOutSentence(char sentence[], int speed) {
         if (currentChar == 3) { // CTRL-C
             exit(-1);
         }
-        currentChar = getch();
+        currentChar = (char)getch();
     } 
     free(dummy);
 }
@@ -307,7 +307,7 @@ void secret() {
     typeOutSentence("So, I hope you enjoyed playing the game!", 30);
     system("cls");
     typeOutSentenceWithoutHang("Thank you for playing!", 30);
-    char currentChar = getch();
+    char currentChar = (char)getch();
     while (!_kbhit() && currentChar != '\r') { // hang until enter key is pressed
         if (currentChar == 3) {
             exit(-1);
@@ -319,7 +319,7 @@ void secret() {
             }
             break;
         }
-        currentChar = getch();
+        currentChar = (char)getch();
     } 
 }
 
@@ -330,7 +330,7 @@ void freeParagraph(char *paragraph[], int length) {
 }
 
 int main() {
-    mallocedPointerArray = (void **)malloc(sizeof(void *) * freeArraySize);
+    mallocedPointerArray = (void **)malloc(sizeof(void *) * (unsigned long)freeArraySize);
     disableEcho();
     char mc[201];
     while (1) {
