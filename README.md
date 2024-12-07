@@ -14,7 +14,7 @@ Firstly, after obtaining the binary either via release or compiling, the program
 ```
 ./jameson.exe
 ```
-The program does not take any arguments.
+If for some reason you want the dialog to automatically skip, you can tell the program to automatically progress to the next piece of dialog by running it with the `-s` flag.
 
 When the program is first run, you will be prompted to enter your name. Any open-ended questions like this will take a wide range of characters. The input will be recorded when you press `Enter`.
 

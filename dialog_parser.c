@@ -15,6 +15,7 @@ int blessing = 0;
 int readNotebook = 0;
 
 // other important globals
+int autoSkip = 0;
 char mc[201];
 
 void *smartMalloc(size_t size) {
@@ -130,6 +131,10 @@ void sleepms(int milliseconds) {
 }
 
 void hangForEnter() {
+    if (autoSkip) {
+        sleepms(20);
+        return;
+    }
     char currentChar = (char)getch();
     if (currentChar == 3) { // CTRL-C
             exit(-1);
@@ -274,8 +279,30 @@ void fetchMCName() {
     }
 }
 
-int main() {
+void setArgumentFlags(int argc, char **argv) {
+    char *customArgumentVector = NULL;
+    for (int i=0; i<argc; i++) {
+        if (argv[i][0] == '-') {
+            customArgumentVector = argv[i];
+        }
+    }
+    if (customArgumentVector == NULL) {
+        return;
+    }
+    for (int i=1;i<(int)strlen(customArgumentVector);i++) {
+        switch (customArgumentVector[i]) {
+            case 's':
+                autoSkip = 1;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+int main(int argc, char **argv) {
     mallocedPointerArray = (void **)malloc(sizeof(void *) * (unsigned long)freeArraySize);
+    setArgumentFlags(argc, argv);
     disableEcho();
     fetchMCName();
 
