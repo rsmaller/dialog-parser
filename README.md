@@ -7,7 +7,7 @@ This is Jason's birthday present. Happy birthday Jason!!!
 This is a digital story game/project written entirely in C partially for the purpose of understanding how nodes, pointers, and GitHub work.
 The other half of this was for me to be funny and make a few laughs.
 
-This project has a tree somewhere in the order of 80 dialog nodes. It took many hours of work to make the node parsing functionality and of course the nodes themnselves. Enjoy!
+This project has a tree somewhere in the order of 80 dialog nodes. It took many hours of work to make the node parsing functionality and of course the nodes themselves. Enjoy!
 
 ## Usage
 Firstly, after obtaining the binary either via release or compiling, the program can be run as follows:
