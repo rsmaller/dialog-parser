@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <Windows.h>
 #include <windows.h>
 #include <string.h>
 #include <conio.h>
@@ -14,6 +13,9 @@ void **mallocedPointerArray;
 //  dialog flow conditionals
 int blessing = 0;
 int readNotebook = 0;
+
+// other important globals
+char mc[201];
 
 void *smartMalloc(size_t size) {
 	void *mallocedPointer = malloc(size);
@@ -57,79 +59,49 @@ typedef struct node {
     int *conditionToRequire;
 } node;
 
-node *makeNode(char **paragraph, int paragraphLength, int speed) {
+void nodeAttributeSet(node *nodeArg, int speed, node *nextNode0, node *nextNode1, int openEndedQuestion, unsigned long openEndedAnswerHash, char *question, int paragraphLength, void (*functionPointer)(void), int *conditionToChange, int *conditionToRequire) {
+    nodeArg -> speed = speed;
+    nodeArg -> nextNode0 = nextNode0;
+    nodeArg -> nextNode1 = nextNode1;
+    nodeArg -> openEndedQuestion = openEndedQuestion;
+    nodeArg -> openEndedAnswerHash = openEndedAnswerHash;
+    nodeArg -> question = question;
+    nodeArg -> paragraphLength = paragraphLength;
+    nodeArg -> functionPointer = functionPointer;
+    nodeArg -> conditionToChange = conditionToChange;
+    nodeArg -> conditionToRequire = conditionToRequire;
+}
+
+node *allocateNodeFromParagraph(char **paragraph, int paragraphLength) {
     node *newNode = (node *)smartMalloc(sizeof(node));
     newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
     for (int i=0;i<paragraphLength;i++) {
         newNode -> paragraph[i] = paragraph[i];
     }
-    newNode -> speed = speed;
-    newNode -> nextNode0 = NULL;
-    newNode -> nextNode1 = NULL;
-    newNode -> openEndedQuestion = 0;
-    newNode -> openEndedAnswerHash = 0;
-    newNode -> question = NULL;
-    newNode -> paragraphLength = paragraphLength;
-    newNode -> functionPointer = NULL;
-    newNode -> conditionToChange = NULL;
-    newNode -> conditionToRequire = NULL;
+    return newNode;
+}
+
+node *makeNode(char **paragraph, int paragraphLength, int speed) {
+    node *newNode = allocateNodeFromParagraph(paragraph, paragraphLength);
+    nodeAttributeSet(newNode, speed, NULL, NULL, 0, 0, NULL, paragraphLength, NULL, NULL, NULL);
     return newNode;
 }
 
 node *makeFunctionNode(char **paragraph, int paragraphLength, int speed, void (*functionPointer)(void)) { // function runs after node is typed out.
-    node *newNode = (node *)smartMalloc(sizeof(node));
-    newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
-    for (int i=0;i<paragraphLength;i++) {
-        newNode -> paragraph[i] = paragraph[i];
-    }
-    newNode -> speed = speed;
-    newNode -> nextNode0 = NULL;
-    newNode -> nextNode1 = NULL;
-    newNode -> openEndedQuestion = 0;
-    newNode -> openEndedAnswerHash = 0;
-    newNode -> question = NULL;
-    newNode -> paragraphLength = paragraphLength;
-    newNode -> functionPointer = functionPointer;
-    newNode -> conditionToChange = NULL;
-    newNode -> conditionToRequire = NULL;
+    node *newNode = allocateNodeFromParagraph(paragraph, paragraphLength);
+    nodeAttributeSet(newNode, speed, NULL, NULL, 0, 0, NULL, paragraphLength, functionPointer, NULL, NULL);
     return newNode;
 }
 
 node *makeQuestionNode(char **paragraph, int paragraphLength, int speed, char question[], int *conditionChanger, int *conditionRequirement) {
-    node *newNode = (node *)smartMalloc(sizeof(node));
-    newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
-    for (int i=0;i<paragraphLength;i++) {
-        newNode -> paragraph[i] = paragraph[i];
-    }
-    newNode -> speed = speed;
-    newNode -> nextNode0 = NULL;
-    newNode -> nextNode1 = NULL;
-    newNode -> openEndedQuestion = 0;
-    newNode -> openEndedAnswerHash = 0;
-    newNode -> question = question;
-    newNode -> paragraphLength = paragraphLength;
-    newNode -> functionPointer = NULL;
-    newNode -> conditionToChange = conditionChanger;
-    newNode -> conditionToRequire = conditionRequirement;
+    node *newNode = allocateNodeFromParagraph(paragraph, paragraphLength);
+    nodeAttributeSet(newNode, speed, NULL, NULL, 0, 0, question, paragraphLength, NULL, conditionChanger, conditionRequirement);
     return newNode;
 }
 
 node *makeOpenEndedQuestionNode(char **paragraph, int paragraphLength, int speed, char question[], unsigned long answerHash, int *conditionRequirement) {
-    node *newNode = (node *)smartMalloc(sizeof(node));
-    newNode -> paragraph = (char **)smartMalloc(sizeof(char *)*(unsigned int)paragraphLength);
-    for (int i=0;i<paragraphLength;i++) {
-        newNode -> paragraph[i] = paragraph[i];
-    }
-    newNode -> speed = speed;
-    newNode -> nextNode0 = NULL;
-    newNode -> nextNode1 = NULL;
-    newNode -> openEndedQuestion = 1;
-    newNode -> question = question; 
-    newNode -> openEndedAnswerHash = answerHash;
-    newNode -> paragraphLength = paragraphLength;
-    newNode -> functionPointer = NULL;
-    newNode -> conditionToChange = NULL;
-    newNode -> conditionToRequire = conditionRequirement;
+    node *newNode = allocateNodeFromParagraph(paragraph, paragraphLength);
+    nodeAttributeSet(newNode, speed, NULL, NULL, 1, answerHash, question, paragraphLength, NULL, NULL, conditionRequirement);
     return newNode;
 }
 
@@ -157,29 +129,7 @@ void sleepms(int milliseconds) {
     Sleep((DWORD)milliseconds);
 }
 
-void printEllipse() {
-    for (int i=0;i<3;i++) {
-        sleepms(360);
-        printf(".");
-        fflush(stdout);
-    }
-}
-
-void typeOutSentence(char sentence[], int speed) {
-    if (!sentence) {
-        return;
-    }
-    char *dummy = (char *)smartMalloc(1024);
-    for (int i=0;i<(int)strlen(sentence);i++) {
-        sleepms(speed);
-        if (_kbhit() && getch() == ' ') {
-            char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
-            printf("%s", restOfString);
-            break;
-        }
-        printf("%c", sentence[i]);
-        fflush(stdout);
-    }
+void hangForEnter() {
     char currentChar = (char)getch();
     if (currentChar == 3) { // CTRL-C
             exit(-1);
@@ -190,7 +140,6 @@ void typeOutSentence(char sentence[], int speed) {
         }
         currentChar = (char)getch();
     } 
-    free(dummy);
 }
 
 void typeOutSentenceWithoutHang(char sentence[], int speed) {
@@ -201,7 +150,7 @@ void typeOutSentenceWithoutHang(char sentence[], int speed) {
     for (int i=0;i<(int)strlen(sentence);i++) {
         sleepms(speed);
         if (_kbhit() && getch() == ' ') {
-            char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
+            char *restOfString = sentence + (unsigned int)i;
             printf("%s", restOfString);
             break;
         }
@@ -211,54 +160,40 @@ void typeOutSentenceWithoutHang(char sentence[], int speed) {
     free(dummy);
 }
 
+void typeOutSentence(char sentence[], int speed) {
+    typeOutSentenceWithoutHang(sentence, speed);
+    hangForEnter();
+}
+
 char *askOpenQuestion(char sentence[], int speed) {
     char *dummy = (char *)smartMalloc(1024);
-    for (int i=0;i<(int)strlen(sentence);i++) {
-        sleepms(speed);
-        if (_kbhit() && getch() == ' ') {
-            char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
-            printf("%s", restOfString);
-            break;
-        }
-        printf("%c", sentence[i]);
-        fflush(stdout);
-    }
+    typeOutSentenceWithoutHang(sentence, speed);
     fgets(dummy, 1024, stdin);
-    dummy[strlen(dummy)-1] = '\0'; // replace newline with null terminator in grabbed string.
+    dummy[strlen(dummy)-1] = '\0'; // replace newline with null terminator in grabbed string to prevent newline being used in later string comparisons.
     return dummy;
 }
 
-int askBool(char sentence[], int speed, int openEndedness, unsigned long answerHash) {
+int askQuestion(char sentence[], int speed, int openEndedness, unsigned long answerHash) {
     char *userInput;
-    if (!openEndedness && !answerHash) {
-        while (1) {
-            system("cls");
-            char input;
-            for (int i=0;i<(int)strlen(sentence);i++) {
-                sleepms(speed);
-                if (_kbhit() && getch() == ' ') {
-                    char *restOfString = sentence + (sizeof(char) * (unsigned int)i);
-                    printf("%s", restOfString);
-                    break;
-                }
-                printf("%c", sentence[i]);
-                fflush(stdout);
-            }
-            scanf(" %c", &input);
-            fflush(stdin);
-            if (input == 'y') {
-                return 1;
-            } else if (input == 'n') {
-                return 0;
-            }
-        }
-    } else {
+    if (openEndedness && answerHash) {
         userInput = askOpenQuestion(sentence, speed);
         return hash(userInput) == answerHash;
     }
+    while (1) {
+        system("cls");
+        char input;
+        typeOutSentenceWithoutHang(sentence, speed);
+        scanf(" %c", &input);
+        fflush(stdin);
+        if (input == 'y') {
+            return 1;
+        } else if (input == 'n') {
+            return 0;
+        }
+    }
 }
 
-void typeOutParagraph(char *paragraph[], int size, int speed) {// speaker is first element in paragraph array.
+void typeOutParagraph(char *paragraph[], int size, int speed) { // speaker is first element in paragraph array.
     char *speaker = (char *)smartMalloc((strlen(paragraph[0]) + 2) * sizeof(char)); 
     strcpy(speaker, paragraph[0]);
     strcat(speaker, ":");
@@ -267,7 +202,7 @@ void typeOutParagraph(char *paragraph[], int size, int speed) {// speaker is fir
         if (strcmp(speaker, ":")) {
         printf("%s\n", speaker);
         }
-        fflush(stdin); // prevent auto-skipping dialog
+        fflush(stdin); // prevent auto-skipping dialog via previously entered characters in buffer.
         typeOutSentence(paragraph[i], speed);
         system("cls");
     }
@@ -285,16 +220,17 @@ void startFromNode(node *nodeArg) {
     node *currentNode = nodeArg;
     typeOutNode(currentNode);
     while (currentNode -> nextNode0 || currentNode -> nextNode1) {
-        if (currentNode -> question) {
-            int outcome = askBool(currentNode -> question, currentNode -> speed, currentNode -> openEndedQuestion, currentNode -> openEndedAnswerHash);
-            if (currentNode -> conditionToChange) {
-                *(currentNode -> conditionToChange) = outcome;
-            }
-            if (outcome && (currentNode -> conditionToRequire == NULL || *(currentNode -> conditionToRequire))) {
-                currentNode = currentNode -> nextNode1;
-            } else {
-                currentNode = currentNode -> nextNode0;
-            }
+        if (!currentNode -> question) {
+            currentNode = currentNode -> nextNode0;
+            typeOutNode(currentNode);
+            continue;
+        }
+        int outcome = askQuestion(currentNode -> question, currentNode -> speed, currentNode -> openEndedQuestion, currentNode -> openEndedAnswerHash);
+        if (currentNode -> conditionToChange) {
+            *(currentNode -> conditionToChange) = outcome;
+        }
+        if (outcome && (currentNode -> conditionToRequire == NULL || *(currentNode -> conditionToRequire))) { // if the outcome is yes and the condition to require either does not exist or is met, go to yes node.
+            currentNode = currentNode -> nextNode1;
         } else {
             currentNode = currentNode -> nextNode0;
         }
@@ -314,7 +250,7 @@ void secret() {
         }
         else if (currentChar == 2) {
             system("cls");
-            if (askBool("If you're Jason, enter the secret passcode below to get a special text file: ", 30, 1, (unsigned long)1015232959UL)) {
+            if (askQuestion("If you're Jason, enter the secret passcode below to get a special text file: ", 30, 1, (unsigned long)1015232959UL)) {
                 writeSecretMessageToFile();
             }
             break;
@@ -323,16 +259,7 @@ void secret() {
     } 
 }
 
-void freeParagraph(char *paragraph[], int length) {
-    for (int i=0;i<length;i++) {
-        free(paragraph[i]);
-    }
-}
-
-int main() {
-    mallocedPointerArray = (void **)malloc(sizeof(void *) * (unsigned long)freeArraySize);
-    disableEcho();
-    char mc[201];
+void fetchMCName() {
     while (1) {
         system("cls");
         strcpy(mc, askOpenQuestion("Please enter your name: ", 30));
@@ -345,6 +272,12 @@ int main() {
             fflush(stdin);
         }
     }
+}
+
+int main() {
+    mallocedPointerArray = (void **)malloc(sizeof(void *) * (unsigned long)freeArraySize);
+    disableEcho();
+    fetchMCName();
 
     char *introParagraph[2] = {"", "You walk into the food court and see Andy and Jason sitting together, talking about music."};
     node *introNode0 = makeQuestionNode(introParagraph, 2, 30, "Join them [y/n]?: ", NULL, NULL);
@@ -512,11 +445,6 @@ int main() {
     char *paragraph97[3] = {"The Elder God, Ryab", "There are ancient evils inhabiting this establishment, like few you've ever seen.", "However, I can protect you from their curses, should you permit it."};
     node *openDoorNode6 = makeQuestionNode(paragraph97, 3, 30, "Will you accept my blessing [y/n]?: ", &blessing, NULL);
     openDoorNode5 -> nextNode0 = openDoorNode6;
-    
-    // monster conversion ending
-    // char *paragraph98[6] = {"", "A dark and warm presence embraces you.", "It unravels every fiber of your being, and you feel yourself being changed.", "Everything is black, so you can't tell exactly how you've changed, but you know the person you once were no longer exists.", "There is no going back.", "Ending 3/6: ~{A Fate Worse Than Death}~"};
-    // node *cursedEndNode = makeNode(paragraph98, 6, 30);
-    // openDoorNode6 -> nextNode0 = cursedEndNode;
 
     // post door nodes
     char *paragraph200[7] = {"", "You find yourself in a dark corridor once again.", "The ground around you feels somewhat.. jagged?", "You can't exactly place what the feeling is, though there is an air of instability and uncertainty.", "This hall is darker than you remember it being.", "You walk down the hall for a little bit hoping to catch a glimpse of something recognizable.", "What you find is unexpected to say the least..."};
