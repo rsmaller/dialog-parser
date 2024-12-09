@@ -255,7 +255,7 @@ void secret() {
         }
         else if (currentChar == 2) {
             system("cls");
-            if (askQuestion("If you're Jason, enter the secret passcode below to get a special text file: ", 30, 1, (unsigned long)1015232959UL)) {
+            if (askQuestion("Enter the secret passcode below to get a special reward: ", 30, 1, (unsigned long)1015232959UL)) {
                 writeSecretMessageToFile();
             }
             break;
