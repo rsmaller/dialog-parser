@@ -268,7 +268,7 @@ void fetchMCName() {
     while (1) {
         system("cls");
         strcpy(mc, askOpenQuestion("Please enter your name: ", 30));
-        if (strcmp(mc, "Jason") && strcmp(mc, "Andy") && strcmp(mc, "jason") && strcmp(mc, "andy")) {
+        if (strcmp(mc, "Jason") && strcmp(mc, "Andy") && strcmp(mc, "jason") && strcmp(mc, "andy") && strcmp(mc, "")) {
             fflush(stdin);
             break;
         } else {
